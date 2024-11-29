@@ -14,7 +14,7 @@ class CustomNavigationBar extends StatefulWidget {
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
   int currentIndexPage = 0;
 
-  EdgeInsets padding = const EdgeInsets.symmetric(vertical: 6);
+  EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 10,vertical: 6);
 
   @override
   void initState() {
@@ -25,7 +25,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
   void changeAnim() {
     setState(() {
-      padding = const EdgeInsets.symmetric(vertical: 6);
+      padding = const EdgeInsets.symmetric(horizontal: 10,vertical: 6);
     });
     Timer.periodic(const Duration(milliseconds: 100), (ce) {
       setState(() {
@@ -63,8 +63,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           ),
         ),
         child: AnimatedPadding(
+          curve: Curves.easeInOutCubic,
           padding: padding,
-          duration: const Duration(milliseconds: 100),
+          duration: const Duration(milliseconds: 200),
           child: child,
         ),
       );
@@ -116,7 +117,10 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         items: items,
         currentIndex: currentIndexPage,
         onTap: (index) {
-          changeAnim();
+          if(index != currentIndexPage){
+            changeAnim();
+          }
+
           swich(index);
         },
       ),

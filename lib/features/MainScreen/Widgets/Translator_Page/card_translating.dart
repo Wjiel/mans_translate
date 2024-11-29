@@ -12,6 +12,8 @@ class CardTranslating extends StatelessWidget {
 
   TextEditingController _textEditingController = TextEditingController();
 
+  List<String> _mansiLetters = ["ā", "ē", "ё̄", "ӣ", "ӈ", "о̄", "ӯ", "ы̄", "э̄", "ю̄", "я̄"];
+
   void _callback()async {
     final ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
     if (data != null) {
@@ -32,7 +34,8 @@ class CardTranslating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Ink(
+    return Container(
+      clipBehavior: Clip.hardEdge,
       padding: const EdgeInsets.all(20),
       decoration: decorationContainer,
       child: Column(
@@ -84,6 +87,54 @@ class CardTranslating extends StatelessWidget {
               ],
             ),
           ),
+          Visibility(
+            visible: isRussian == true ? false : true,
+            child: Material(
+              color: Colors.transparent,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 43,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                    clipBehavior: Clip.hardEdge,
+                    itemCount: _mansiLetters.length,
+                    scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, i) {
+                        return Padding(
+                          padding: EdgeInsets.only(left: i == 0? 0 : 15),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () {
+                              _textEditingController.text += _mansiLetters[i];
+                            },
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5),
+                                boxShadow: [BoxShadow(
+                                  offset: Offset(0, 2),
+                                  color: Color(0x40000000),
+                                  blurRadius: 8,
+                                  spreadRadius: 2
+                                )]
+                              ),
+                              padding: EdgeInsets.all(10),
+                              child: Center(
+                                child: Text(_mansiLetters[i], style: TextStyle(
+                                  fontFamily: "Roboto",
+                                ),),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 20,),
           StreamBuilder(
             stream: streamVisib.strims,
             builder: (context, snapshot) {
@@ -95,7 +146,7 @@ class CardTranslating extends StatelessWidget {
                 visible: streamVisib.thereClipBordText,
                 child: Align(
                   alignment: Alignment.bottomLeft,
-                  child: PasteButton(callback: _callback,),
+                  child: Material(color: Colors.transparent,child: PasteButton(callback: _callback,)),
                 ),
               );
             },
