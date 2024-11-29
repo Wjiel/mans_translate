@@ -11,6 +11,8 @@ class CustomNavigationBar extends StatefulWidget {
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
   int currentIndexPage = 0;
+
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -18,7 +20,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
     Widget container(Widget child) {
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 6),
+        padding:  EdgeInsets.symmetric(horizontal: 28, vertical: 6),
         margin: const EdgeInsets.all(15),
         decoration: const BoxDecoration(
           color: Tertiary,
