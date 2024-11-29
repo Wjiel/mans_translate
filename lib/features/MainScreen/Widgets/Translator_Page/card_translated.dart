@@ -23,7 +23,7 @@ class CardTranslated extends StatelessWidget {
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOutCirc,
                 child: AutoSizeText(
-                  style:const TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Serif',
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
@@ -31,16 +31,16 @@ class CardTranslated extends StatelessWidget {
                   isRussian ? 'Мансийcкий' : 'Русский',
                 ),
               ),
-              InkWell(
-                borderRadius: BorderRadius.circular(5),
-                onTap: translateText.isNotEmpty ? () {
-                  copyText();
-                } : null,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.copy,
-                    color: translateText.isNotEmpty ? Tertiary : Colors.transparent,
+              Visibility(
+                visible: translateText.isNotEmpty,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  onTap: () {
+                    copyText();
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(Icons.copy, color: Tertiary),
                   ),
                 ),
               ),
@@ -52,21 +52,22 @@ class CardTranslated extends StatelessWidget {
               children: [
                 translateText.isNotEmpty
                     ? SelectableText(
-                  style: TextStyle(
-                    fontFamily: themeData.textTheme.bodySmall!.fontFamily,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 18,
-                  ),
-                  translateText,
-                )
-                    : Text("Здесь будет результат",
-                  style: TextStyle(
-                    color: textColor,
-                    fontFamily: themeData.textTheme.bodySmall!.fontFamily,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 18,
-                  ),
-                ),
+                        style: TextStyle(
+                          fontFamily: themeData.textTheme.bodySmall!.fontFamily,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                        ),
+                        translateText,
+                      )
+                    : Text(
+                        "Здесь будет результат",
+                        style: TextStyle(
+                          color: textColor,
+                          fontFamily: themeData.textTheme.bodySmall!.fontFamily,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                        ),
+                      ),
               ],
             ),
           )

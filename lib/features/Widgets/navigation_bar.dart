@@ -14,10 +14,16 @@ class CustomNavigationBar extends StatefulWidget {
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
   int currentIndexPage = 0;
 
-  EdgeInsets padding = const EdgeInsets.all(0);
+  EdgeInsets padding = const EdgeInsets.symmetric(vertical: 6);
 
-  void change(int index) {
-    //anim
+  @override
+  void initState() {
+    super.initState();
+
+    changeAnim();
+  }
+
+  void changeAnim() {
     setState(() {
       padding = const EdgeInsets.symmetric(vertical: 6);
     });
@@ -27,8 +33,9 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       });
       ce.cancel();
     });
+  }
 
-    //logika
+  void swich(int index) {
     setState(() {
       currentIndexPage = index;
     });
@@ -109,7 +116,8 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         items: items,
         currentIndex: currentIndexPage,
         onTap: (index) {
-          change(index);
+          changeAnim();
+          swich(index);
         },
       ),
     );
