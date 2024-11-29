@@ -1,4 +1,3 @@
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,13 +7,27 @@ import 'package:mans_translate/features/MainScreen/Pages/translator_page.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/paste_button.dart';
 
 class CardTranslating extends StatelessWidget {
-  CardTranslating({super.key,});
+  CardTranslating({
+    super.key,
+  });
 
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
 
-  List<String> _mansiLetters = ["ā", "ē", "ё̄", "ӣ", "ӈ", "о̄", "ӯ", "ы̄", "э̄", "ю̄", "я̄"];
+  final List<String> _mansiLetters = [
+    "ā",
+    "ē",
+    "ё̄",
+    "ӣ",
+    "ӈ",
+    "о̄",
+    "ӯ",
+    "ы̄",
+    "э̄",
+    "ю̄",
+    "я̄"
+  ];
 
-  void _callback()async {
+  void _callback() async {
     final ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
     if (data != null) {
       _textEditingController.text = data.text!;
@@ -22,15 +35,11 @@ class CardTranslating extends StatelessWidget {
     }
   }
 
-  void _sendTextToAPI(){
-    String _text = _textEditingController.text;
-    if(isRussian == true){
-
-    } else {
-
-    }
+  void _sendTextToAPI() {
+    String text = _textEditingController.text;
+    if (isRussian == true) {
+    } else {}
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +55,7 @@ class CardTranslating extends StatelessWidget {
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOutCirc,
             child: AutoSizeText(
-              style:const TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Serif',
                 fontWeight: FontWeight.w500,
                 fontSize: 16,
@@ -60,9 +69,9 @@ class CardTranslating extends StatelessWidget {
               children: [
                 TextField(
                   controller: _textEditingController,
-                  onChanged: (text){
-                    Timer(Duration(seconds: 1), () {
-                      if(text == _textEditingController.text){
+                  onChanged: (text) {
+                    Timer(const Duration(seconds: 1), () {
+                      if (text == _textEditingController.text) {
                         _sendTextToAPI();
                       }
                     });
@@ -87,22 +96,26 @@ class CardTranslating extends StatelessWidget {
               ],
             ),
           ),
-          Visibility(
-            visible: isRussian == true ? false : true,
-            child: Material(
-              color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  height: 43,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                    clipBehavior: Clip.hardEdge,
-                    itemCount: _mansiLetters.length,
-                    scrollDirection: Axis.horizontal,
+          AnimatedOpacity(
+            opacity: opacity,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOutCirc,
+            child: Visibility(
+              visible: isRussian == true ? false : true,
+              child: Material(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    height: 43,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                      clipBehavior: Clip.hardEdge,
+                      itemCount: _mansiLetters.length,
+                      scrollDirection: Axis.horizontal,
                       itemBuilder: (context, i) {
                         return Padding(
-                          padding: EdgeInsets.only(left: i == 0? 0 : 15),
+                          padding: EdgeInsets.only(left: i == 0 ? 0 : 15),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(5),
                             onTap: () {
@@ -110,31 +123,37 @@ class CardTranslating extends StatelessWidget {
                             },
                             child: Ink(
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(5),
-                                boxShadow: [BoxShadow(
-                                  offset: Offset(0, 2),
-                                  color: Color(0x40000000),
-                                  blurRadius: 8,
-                                  spreadRadius: 2
-                                )]
-                              ),
-                              padding: EdgeInsets.all(10),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        offset: Offset(0, 2),
+                                        color: Color(0x40000000),
+                                        blurRadius: 8,
+                                        spreadRadius: 2)
+                                  ]),
+                              padding: const EdgeInsets.all(10),
                               child: Center(
-                                child: Text(_mansiLetters[i], style: TextStyle(
-                                  fontFamily: "Roboto",
-                                ),),
+                                child: Text(
+                                  _mansiLetters[i],
+                                  style: const TextStyle(
+                                    fontFamily: "Roboto",
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         );
                       },
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-          SizedBox(height: 20,),
+          const SizedBox(
+            height: 20,
+          ),
           StreamBuilder(
             stream: streamVisib.strims,
             builder: (context, snapshot) {
@@ -146,7 +165,12 @@ class CardTranslating extends StatelessWidget {
                 visible: streamVisib.thereClipBordText,
                 child: Align(
                   alignment: Alignment.bottomLeft,
-                  child: Material(color: Colors.transparent,child: PasteButton(callback: _callback,)),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: PasteButton(
+                      callback: _callback,
+                    ),
+                  ),
                 ),
               );
             },
