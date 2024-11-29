@@ -15,43 +15,57 @@ class CardTranslated extends StatelessWidget {
       decoration: decorationContainer,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AnimatedOpacity(
-                  opacity: opacity,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOutCirc,
-                  child: AutoSizeText(
-                    isRussian ? 'Манскийcкий' : 'Русский',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AnimatedOpacity(
+                opacity: opacity,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOutCirc,
+                child: AutoSizeText(
+                  style:const TextStyle(
+                    fontFamily: 'Serif',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
                   ),
+                  isRussian ? 'Мансийcкий' : 'Русский',
                 ),
-                InkWell(
-                  onTap: () {
-                    copyText();
-                  },
-                  child: const Icon(
+              ),
+              InkWell(
+                borderRadius: BorderRadius.circular(5),
+                onTap: translateText.isNotEmpty ? () {
+                  copyText();
+                } : null,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
                     Icons.copy,
-                    color: Tertiary,
+                    color: translateText.isNotEmpty ? Tertiary : Colors.transparent,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           Expanded(
             child: ListView(
               shrinkWrap: true,
               children: [
-                SelectableText(
+                translateText.isNotEmpty
+                    ? SelectableText(
+                  style: TextStyle(
+                    fontFamily: themeData.textTheme.bodySmall!.fontFamily,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                  ),
+                  translateText,
+                )
+                    : Text("Здесь будет результат",
                   style: TextStyle(
                     color: textColor,
                     fontFamily: themeData.textTheme.bodySmall!.fontFamily,
-                    fontWeight: themeData.textTheme.bodySmall!.fontWeight,
-                    fontSize: themeData.textTheme.bodySmall!.fontSize,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
                   ),
-                  translateText,
                 ),
               ],
             ),

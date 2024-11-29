@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
             width: 100,
             decoration: BoxDecoration(
               image: const DecorationImage(
-                  image: AssetImage("assets/images/game.png")),
+                  image: AssetImage("assets/images/translate.png")),
               borderRadius: BorderRadius.circular(20),
               color: Colors.white,
             ),

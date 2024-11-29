@@ -1,11 +1,34 @@
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:async';
 import 'package:mans_translate/Config/ThemesData/themes_data.dart';
 import 'package:mans_translate/features/MainScreen/Pages/translator_page.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/paste_button.dart';
 
 class CardTranslating extends StatelessWidget {
-  const CardTranslating({super.key});
+  CardTranslating({super.key,});
+
+  TextEditingController _textEditingController = TextEditingController();
+
+  void _callback()async {
+    final ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+    if (data != null) {
+      _textEditingController.text = data.text!;
+      _sendTextToAPI();
+    }
+  }
+
+  void _sendTextToAPI(){
+    String _text = _textEditingController.text;
+    if(isRussian == true){
+
+    } else {
+
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -15,15 +38,17 @@ class CardTranslating extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: AnimatedOpacity(
-              opacity: opacity,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOutCirc,
-              child: AutoSizeText(
-                isRussian ? 'Русский' : 'Манскийcкий',
+          AnimatedOpacity(
+            opacity: opacity,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOutCirc,
+            child: AutoSizeText(
+              style:const TextStyle(
+                fontFamily: 'Serif',
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
               ),
+              isRussian ? 'Русский' : 'Мансийcкий',
             ),
           ),
           Expanded(
@@ -31,14 +56,27 @@ class CardTranslating extends StatelessWidget {
               shrinkWrap: true,
               children: [
                 TextField(
+                  controller: _textEditingController,
+                  onChanged: (text){
+                    Timer(Duration(seconds: 1), () {
+                      if(text == _textEditingController.text){
+                        _sendTextToAPI();
+                      }
+                    });
+                  },
                   maxLines: null,
+                  style: TextStyle(
+                    fontFamily: themeData.textTheme.bodySmall!.fontFamily,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                  ),
                   decoration: InputDecoration(
                     hintText: 'Введите текст...',
                     hintStyle: TextStyle(
                       color: textColor,
                       fontFamily: themeData.textTheme.bodySmall!.fontFamily,
-                      fontWeight: themeData.textTheme.bodySmall!.fontWeight,
-                      fontSize: themeData.textTheme.bodySmall!.fontSize,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18,
                     ),
                     border: InputBorder.none,
                   ),
@@ -46,7 +84,7 @@ class CardTranslating extends StatelessWidget {
               ],
             ),
           ),
-          StreamBuilder<dynamic>(
+          StreamBuilder(
             stream: streamVisib.strims,
             builder: (context, snapshot) {
               if (!snapshot.hasData || streamVisib.thereClipBordText == false) {
@@ -55,9 +93,9 @@ class CardTranslating extends StatelessWidget {
 
               return Visibility(
                 visible: streamVisib.thereClipBordText,
-                child: const Align(
+                child: Align(
                   alignment: Alignment.bottomLeft,
-                  child: PasteButton(),
+                  child: PasteButton(callback: _callback,),
                 ),
               );
             },

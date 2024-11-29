@@ -6,7 +6,7 @@ import 'package:mans_translate/Config/Colors/colors_data.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/card_translated.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/card_translating.dart';
 
-String translateText = 'Здесь будет результат';
+String translateText = '';
 
 Color textColor = const Color(0xFFA8A8A8);
 
@@ -49,6 +49,8 @@ class TranslatorPage extends StatefulWidget {
 }
 
 class _TranslatorPageState extends State<TranslatorPage> {
+
+  
   void copyText() {
     Clipboard.setData(
       ClipboardData(text: translateText),
@@ -103,14 +105,18 @@ class _TranslatorPageState extends State<TranslatorPage> {
               ),
               SizedBox(
                 height: 70 + 5 * (size.width / 1080),
-                child: InkWell(
-                  onTap: () {
-                    changeCard();
-                  },
-                  child: Image.asset(
-                    'assets/images/arrows.png',
-                    color: Tertiary,
-                    width: 35 + 5 * (size.width / 1080),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(10),
+                    onTap: () {
+                      changeCard();
+                    },
+                    child: Image.asset(
+                      'assets/images/arrows.png',
+                      color: Tertiary,
+                      width: 35 + 5 * (size.width / 1080),
+                    ),
                   ),
                 ),
               ),

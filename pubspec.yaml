@@ -26,8 +26,42 @@ flutter:
   fonts:
     - family: Serif
       fonts:
-        - asset: assets/fonts/Roboto_Serif/RobotoSerif-VariableFont_GRAD,opsz,wdth,wght.ttf
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Roboto_Serif/static/RobotoSerif-Black.ttf
+          weight: 900
     - family: Slab
       fonts:
-        - asset: assets/fonts/Roboto_Slab/RobotoSlab-VariableFont_wght.ttf
+        - asset: assets/fonts/Roboto_Slab/static/RobotoSlab-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Roboto_Slab/static/RobotoSlab-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Roboto_Slab/static/RobotoSlab-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Roboto_Slab/static/RobotoSlab-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Roboto_Slab/static/RobotoSlab-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto_Slab/static/RobotoSlab-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Roboto_Slab/static/RobotoSlab-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Roboto_Slab/static/RobotoSlab-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Roboto_Slab/static/RobotoSlab-Black.ttf
+          weight: 900
         

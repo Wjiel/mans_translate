@@ -1,15 +1,19 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mans_translate/Config/Colors/colors_data.dart';
 import 'package:mans_translate/Config/ThemesData/themes_data.dart';
 
+
 class PasteButton extends StatelessWidget {
-  const PasteButton({super.key});
+  final void Function()? callback;
+  const PasteButton({super.key, this.callback});
+
   final double radius = 20;
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: callback,
       borderRadius: BorderRadius.circular(radius),
       child: Ink(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
