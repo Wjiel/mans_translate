@@ -21,20 +21,7 @@ final decorationContainer = BoxDecoration(
   ],
 );
 
-class _myStream {
-  late bool thereClipBordText = false;
 
-  set isBoard(bool isThere) {
-    thereClipBordText = isThere;
-    _controller.add(thereClipBordText);
-  }
-
-  final StreamController<bool> _controller = StreamController.broadcast();
-
-  Stream<bool> get strims => _controller.stream;
-}
-
-final _myStream streamVisib = _myStream();
 
 bool isRussian = false;
 
@@ -55,17 +42,13 @@ class _TranslatorPageState extends State<TranslatorPage> {
     Clipboard.setData(
       ClipboardData(text: translateText),
     );
-    checkTextBoard();
   }
 
-  void checkTextBoard() async {
-    streamVisib.isBoard = await Clipboard.hasStrings();
-  }
+
 
   @override
   void initState() {
     super.initState();
-    checkTextBoard();
   }
 
   void changeCard() {
