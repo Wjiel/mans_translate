@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mans_translate/Config/Colors/colors_data.dart';
 import 'package:mans_translate/features/MainScreen/main_screen.dart';
@@ -11,6 +13,33 @@ class CustomNavigationBar extends StatefulWidget {
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
   int currentIndexPage = 0;
+
+  EdgeInsets padding = const EdgeInsets.all(0);
+
+  void change(int index) {
+    //anim
+    setState(() {
+      padding = const EdgeInsets.symmetric(vertical: 6);
+    });
+    Timer.periodic(const Duration(milliseconds: 100), (ce) {
+      setState(() {
+        padding = const EdgeInsets.symmetric(horizontal: 28, vertical: 6);
+      });
+      ce.cancel();
+    });
+
+    //logika
+    setState(() {
+      currentIndexPage = index;
+    });
+
+    pageControllerMain.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOutExpo,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -18,7 +47,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
     Widget container(Widget child) {
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 6),
         margin: const EdgeInsets.all(15),
         decoration: const BoxDecoration(
           color: Tertiary,
@@ -27,7 +55,11 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
             left: Radius.circular(30),
           ),
         ),
-        child: child,
+        child: AnimatedPadding(
+          padding: padding,
+          duration: const Duration(milliseconds: 100),
+          child: child,
+        ),
       );
     }
 
@@ -77,15 +109,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         items: items,
         currentIndex: currentIndexPage,
         onTap: (index) {
-          setState(() {
-            currentIndexPage = index;
-          });
-
-          pageControllerMain.animateToPage(
-            index,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOutExpo,
-          );
+          change(index);
         },
       ),
     );
