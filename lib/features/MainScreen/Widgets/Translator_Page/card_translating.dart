@@ -74,7 +74,7 @@ class _CardTranslatingState extends State<CardTranslating> with ClipboardListene
           'Content-Type': 'application/json',
         },
       );
-      String resultText = jsonDecode(response.body)["translatedText"];
+      String resultText = jsonDecode(utf8.decode(response.bodyBytes))["translatedText"];
 
         _resultTextStreamController.add(resultText);
 
@@ -91,7 +91,8 @@ class _CardTranslatingState extends State<CardTranslating> with ClipboardListene
           'Content-Type': 'application/json',
         },
       );
-      String resultText = jsonDecode(response.body)["translatedText"];
+
+      String resultText = jsonDecode(utf8.decode(response.bodyBytes))["translatedText"];
 
         _resultTextStreamController.add(resultText);
 
