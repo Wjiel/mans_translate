@@ -21,8 +21,6 @@ final decorationContainer = BoxDecoration(
   ],
 );
 
-
-
 bool isRussian = false;
 
 double opacity = 1;
@@ -36,15 +34,11 @@ class TranslatorPage extends StatefulWidget {
 }
 
 class _TranslatorPageState extends State<TranslatorPage> {
-
-  
   void copyText() {
     Clipboard.setData(
       ClipboardData(text: translateText),
     );
   }
-
-
 
   @override
   void initState() {
@@ -53,6 +47,8 @@ class _TranslatorPageState extends State<TranslatorPage> {
 
   void changeCard() {
     setState(() {
+      isHistory = false;
+
       opacity = 0;
       scale = 0.9;
     });
