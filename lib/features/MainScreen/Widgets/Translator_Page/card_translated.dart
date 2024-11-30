@@ -25,7 +25,15 @@ bool isHistory = false;
 
 class _CardTranslatedState extends State<CardTranslated>
     with WidgetsBindingObserver {
-  List historyItem = [0, 1];
+  Map<String, dynamic> mapHistory = {};
+  List historyItem = [
+    {
+      "sourceText": "Дома бегают дети",
+      "targetText": "Дем лак щш",
+      "isRussian": true,
+      "index": 1,
+    }
+  ];
 
   double heightInfoFacts = 60;
 
@@ -158,109 +166,154 @@ class _CardTranslatedState extends State<CardTranslated>
             child: StreamBuilder(
                 stream: _resultTextStream,
                 initialData: "",
-              builder: (context, snapshot) {
-                return Stack(
-                  children: [
-                    AnimatedOpacity(
-                      opacity: isHistory ? 0 : 1,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOutCirc,
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: [
-                          snapshot.data.isNotEmpty
-                              ? SelectableText(
-                            style: TextStyle(
-                              fontFamily:
-                              themeData.textTheme.bodySmall!.fontFamily,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18,
-                            ),
-                            snapshot.data,
-                          )
-                              : Text(
-                            "Здесь будет результат",
-                            style: TextStyle(
-                              color: textColor,
-                              fontFamily:
-                              themeData.textTheme.bodySmall!.fontFamily,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
+                builder: (context, snapshot) {
+                  return Stack(
+                    children: [
+                      AnimatedOpacity(
+                        opacity: isHistory ? 0 : 1,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOutCirc,
+                        child: ListView(
+                          shrinkWrap: true,
+                          children: [
+                            snapshot.data.isNotEmpty
+                                ? SelectableText(
+                                    style: TextStyle(
+                                      fontFamily: themeData
+                                          .textTheme.bodySmall!.fontFamily,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 18,
+                                    ),
+                                    snapshot.data,
+                                  )
+                                : Text(
+                                    "Здесь будет результат",
+                                    style: TextStyle(
+                                      color: textColor,
+                                      fontFamily: themeData
+                                          .textTheme.bodySmall!.fontFamily,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                          ],
+                        ),
                       ),
-                    ),
-                    isHistory
-                        ? historyItem.isEmpty
-                            ? Center(
-                                child: AnimatedOpacity(
+                      isHistory
+                          ? historyItem.isEmpty
+                              ? Center(
+                                  child: AnimatedOpacity(
+                                    opacity: isHistory == false ? 0 : 1,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInOutCirc,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/noneText.png',
+                                          width: 80,
+                                        ),
+                                        Text(
+                                          'Тут пока ничего нет',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: themeData.textTheme
+                                                .bodySmall!.fontFamily,
+                                            color: const Color(0xFF606060),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : AnimatedOpacity(
                                   opacity: isHistory == false ? 0 : 1,
                                   duration: const Duration(milliseconds: 300),
                                   curve: Curves.easeInOutCirc,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/noneText.png',
-                                        width: 80,
-                                      ),
-                                      Text(
-                                        'Тут пока ничего нет',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: themeData
-                                              .textTheme.bodySmall!.fontFamily,
-                                          color: const Color(0xFF606060),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : AnimatedOpacity(
-                                opacity: isHistory == false ? 0 : 1,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeInOutCirc,
-                                child: ListView.builder(
-                                  itemCount: historyItem.length,
-                                  itemBuilder: (context, i) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                          top: const BorderSide(
-                                              color: Color(0xFFC5C5C5)),
-                                          bottom: i == historyItem.length - 1
-                                              ? const BorderSide(
+                                  child: ListView.builder(
+                                    itemCount: historyItem.length,
+                                    itemBuilder: (context, i) {
+                                      return Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          onTap: () {},
+                                          child: Ink(
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                top: const BorderSide(
                                                   color: Color(0xFFC5C5C5),
+                                                ),
+                                                bottom: i ==
+                                                        historyItem.length - 1
+                                                    ? const BorderSide(
+                                                        color:
+                                                            Color(0xFFC5C5C5),
+                                                      )
+                                                    : BorderSide.none,
+                                              ),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "${i + 1}.",
+                                                  style: const TextStyle(
+                                                    fontFamily: 'Serif',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                                const Flexible(
+                                                    child: SizedBox(
+                                                  width: 10,
+                                                )),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    AutoSizeText(
+                                                      historyItem[i]
+                                                          ['sourceText'],
+                                                      style: const TextStyle(
+                                                        fontFamily: 'Slab',
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                    AutoSizeText(
+                                                      historyItem[i]
+                                                              ['isRussian']
+                                                          ? 'Русский - Мансийский'
+                                                          : 'Мансийский - Русский',
+                                                      style: const TextStyle(
+                                                        color:
+                                                            Color(0xFF8B8B8B),
+                                                        fontFamily: 'Slab',
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 )
-                                              : BorderSide.none,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "${i + 1}.",
-                                            style: const TextStyle(
-                                              fontSize: 16,
+                                              ],
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                        : const SizedBox.shrink(),
-                  ],
-                );
-              }
-            ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                          : const SizedBox.shrink(),
+                    ],
+                  );
+                }),
           ),
           _isKeyboardOpen == false
               ? AnimatedOpacity(
-            opacity: isHistory || historyItem.isEmpty ? 0 : 1,
+                  opacity: isHistory || historyItem.isEmpty ? 0 : 1,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOutCirc,
                   onEnd: () {
@@ -268,16 +321,21 @@ class _CardTranslatedState extends State<CardTranslated>
                   },
                   child: InkWell(
                     onTap: () {
-                      showCustomAlertDialog(context, "Интересный факт", () {
-                        Navigator.of(context).pop();
-                      },
-                          const Text(
-                            "Язык манси входит в обширную группу финно-угорских языков и, согласно исследованиям, больше всего схож с венгерским.",
-                            style: TextStyle(
-                                fontFamily: "Slab",
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400),
-                          ));
+                      showCustomAlertDialog(
+                        context,
+                        "Интересный факт",
+                        () {
+                          Navigator.of(context).pop();
+                        },
+                        const Text(
+                          "Язык манси входит в обширную группу финно-угорских языков и, согласно исследованиям, больше всего схож с венгерским.",
+                          style: TextStyle(
+                            fontFamily: "Slab",
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      );
                     },
                     borderRadius: BorderRadius.circular(10),
                     child: Ink(
@@ -340,7 +398,7 @@ class _CardTranslatedState extends State<CardTranslated>
                     ),
                   ),
                 )
-              : const SizedBox(),
+              : const SizedBox.shrink(),
         ],
       ),
     );
