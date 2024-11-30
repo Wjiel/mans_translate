@@ -53,16 +53,15 @@ class _TranslatorPageState extends State<TranslatorPage>
     with WidgetsBindingObserver {
   final ResultTextClass _resultTextClass = ResultTextClass();
   late Stream _resultTextStream;
-  final TextEditingController _sourceEditingController = TextEditingController();
+  final TextEditingController _sourceEditingController =
+      TextEditingController();
   late StreamController _resultStreamController;
-
 
   bool isKeyboardOpen = false;
 
   Artboard? _arrowsArtboard;
   SMITrigger? trigger;
   StateMachineController? stateMachineController;
-
 
   @override
   void didChangeMetrics() {
@@ -115,7 +114,7 @@ class _TranslatorPageState extends State<TranslatorPage>
 
   void _loadArrowAnim() {
     rootBundle.load('assets/animations/switchArrows.riv').then(
-          (data) {
+      (data) {
         final file = RiveFile.import(data);
         final artboard = file.mainArtboard;
         stateMachineController =
@@ -124,9 +123,7 @@ class _TranslatorPageState extends State<TranslatorPage>
           artboard.addController(stateMachineController!);
           trigger = stateMachineController!.findSMI('Trigger 1');
 
-          stateMachineController!.inputs.forEach((e) {
-
-          });
+          for (var e in stateMachineController!.inputs) {}
           trigger = stateMachineController!.inputs.first as SMITrigger;
         }
 
@@ -188,21 +185,22 @@ class _TranslatorPageState extends State<TranslatorPage>
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: StreamBuilder(
-                    stream: _resultTextStream,
-                    builder: (context, snapshot) {
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(10),
-                        onTap: () {
-                          changeCard(snapshot.data ?? "");
-                          trigger?.fire();
-                        },
-                        child: _arrowsArtboard != null ? Rive(
-                          artboard: _arrowsArtboard!,
-                          fit: BoxFit.scaleDown,
-                        ) : SizedBox(),
-                      );
-                    }
-                  ),
+                      stream: _resultTextStream,
+                      builder: (context, snapshot) {
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(10),
+                          onTap: () {
+                            changeCard(snapshot.data ?? "");
+                            trigger?.fire();
+                          },
+                          child: _arrowsArtboard != null
+                              ? Rive(
+                                  artboard: _arrowsArtboard!,
+                                  fit: BoxFit.scaleDown,
+                                )
+                              : const SizedBox(),
+                        );
+                      }),
                 ),
               ),
               Expanded(

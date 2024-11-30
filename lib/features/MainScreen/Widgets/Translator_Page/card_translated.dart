@@ -13,6 +13,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:rive/rive.dart';
 import 'package:flutter/src/widgets/image.dart' as Image;
+
 class CardTranslated extends StatefulWidget {
   Function copyText;
   final ResultTextClass resultTextClass;
@@ -29,7 +30,8 @@ class CardTranslated extends StatefulWidget {
 
 bool isHistory = false;
 
-class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObserver {
+class _CardTranslatedState extends State<CardTranslated>
+    with WidgetsBindingObserver {
   List<String> facts = [];
 
   int randomNumber = 0;
@@ -85,7 +87,7 @@ class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObse
 
   void _copyAnim() {
     rootBundle.load('assets/animations/copy.riv').then(
-          (data) {
+      (data) {
         final file = RiveFile.import(data);
         final artboard = file.mainArtboard;
         copyStateMachineController =
@@ -94,10 +96,10 @@ class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObse
           artboard.addController(copyStateMachineController!);
           copyTrigger = copyStateMachineController!.findSMI('Trigger 1');
 
-          copyStateMachineController!.inputs.forEach((e) {
+          for (var e in copyStateMachineController!.inputs) {
             debugPrint(e.runtimeType.toString());
             debugPrint("name${e.name}End");
-          });
+          }
           copyTrigger = copyStateMachineController!.inputs.first as SMITrigger;
         }
 
@@ -108,7 +110,7 @@ class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObse
 
   void _historyAnim() {
     rootBundle.load('assets/animations/history.riv').then(
-          (data) {
+      (data) {
         final file = RiveFile.import(data);
         final artboard = file.mainArtboard;
         historyStateMachineController =
@@ -117,10 +119,9 @@ class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObse
           artboard.addController(historyStateMachineController!);
           historyTrigger = historyStateMachineController!.findSMI('Trigger 1');
 
-          historyStateMachineController!.inputs.forEach((e) {
-
-          });
-          historyTrigger = historyStateMachineController!.inputs.first as SMITrigger;
+          for (var e in historyStateMachineController!.inputs) {}
+          historyTrigger =
+              historyStateMachineController!.inputs.first as SMITrigger;
         }
 
         setState(() => _historyArtboard = artboard);
@@ -130,19 +131,19 @@ class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObse
 
   void _emptyHistoryAnim() {
     rootBundle.load('assets/animations/emptyHistory.riv').then(
-          (data) {
+      (data) {
         final file = RiveFile.import(data);
         final artboard = file.mainArtboard;
         emptyHistoryStateMachineController =
             StateMachineController.fromArtboard(artboard, "State Machine 1");
         if (emptyHistoryStateMachineController != null) {
           artboard.addController(emptyHistoryStateMachineController!);
-          emptyHistoryTrigger = emptyHistoryStateMachineController!.findSMI('Trigger 1');
+          emptyHistoryTrigger =
+              emptyHistoryStateMachineController!.findSMI('Trigger 1');
 
-          emptyHistoryStateMachineController!.inputs.forEach((e) {
-
-          });
-          emptyHistoryTrigger = emptyHistoryStateMachineController!.inputs.first as SMITrigger;
+          for (var e in emptyHistoryStateMachineController!.inputs) {}
+          emptyHistoryTrigger =
+              emptyHistoryStateMachineController!.inputs.first as SMITrigger;
         }
 
         setState(() => _emptyHistoryArtboard = artboard);
@@ -226,42 +227,45 @@ class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObse
                 child: Row(
                   children: [
                     StreamBuilder(
-                      stream: _resultTextStream,
-                      initialData: "",
-                      builder: (context, snapshot) {
-                        return Visibility(
-                          visible: snapshot.data.isNotEmpty,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(5),
-                            onTap: () {
-                              Fluttertoast.showToast(msg: "Скопировано!");
-                              _resultTextClass.resultText = snapshot.data;
-                              widget.copyText();
-                              copyTrigger?.fire();
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: _copyArtboard != null ? Transform.scale(
-                                scale: 1.5,
-                                child: Rive(
-                                  useArtboardSize: true,
-                                  artboard: _copyArtboard!,
-                                  fit: BoxFit.scaleDown,
-                                ),
-                              ) : SizedBox(),
+                        stream: _resultTextStream,
+                        initialData: "",
+                        builder: (context, snapshot) {
+                          return Visibility(
+                            visible: snapshot.data.isNotEmpty,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(5),
+                              onTap: () {
+                                Fluttertoast.showToast(msg: "Скопировано!");
+                                _resultTextClass.resultText = snapshot.data;
+                                widget.copyText();
+                                copyTrigger?.fire();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: _copyArtboard != null
+                                    ? Transform.scale(
+                                        scale: 1.5,
+                                        child: Rive(
+                                          useArtboardSize: true,
+                                          artboard: _copyArtboard!,
+                                          fit: BoxFit.scaleDown,
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                              ),
                             ),
-                          ),
-                        );
-                      }
+                          );
+                        }),
+                    const SizedBox(
+                      width: 10,
                     ),
-                    SizedBox(width: 10,),
                     InkWell(
                       borderRadius: BorderRadius.circular(5),
                       onTap: () {
                         setState(() {
                           isHistory = !isHistory;
                           historyTrigger?.fire();
-                          if(historyItem.isEmpty){
+                          if (historyItem.isEmpty) {
                             emptyHistoryTrigger?.fire();
                           }
                         });
@@ -281,13 +285,15 @@ class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObse
                                   : const BoxShadow(color: Colors.white),
                             ],
                           ),
-                          child:  Transform.scale(
+                          child: Transform.scale(
                             scale: 1,
-                            child: _historyArtboard != null ? Rive(
-                              useArtboardSize: true,
-                              artboard: _historyArtboard!,
-                              fit: BoxFit.scaleDown,
-                            ) : SizedBox(),
+                            child: _historyArtboard != null
+                                ? Rive(
+                                    useArtboardSize: true,
+                                    artboard: _historyArtboard!,
+                                    fit: BoxFit.scaleDown,
+                                  )
+                                : const SizedBox(),
                           ),
                         ),
                       ),
@@ -350,11 +356,14 @@ class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObse
                                           width: 80,
                                           child: Transform.scale(
                                             scale: 1,
-                                            child: _emptyHistoryArtboard != null ? Rive(
-                                              useArtboardSize: true,
-                                              artboard: _emptyHistoryArtboard!,
-                                              fit: BoxFit.scaleDown,
-                                            ) : SizedBox(),
+                                            child: _emptyHistoryArtboard != null
+                                                ? Rive(
+                                                    useArtboardSize: true,
+                                                    artboard:
+                                                        _emptyHistoryArtboard!,
+                                                    fit: BoxFit.scaleDown,
+                                                  )
+                                                : const SizedBox(),
                                           ),
                                         ),
                                         Text(
@@ -372,8 +381,8 @@ class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObse
                                   ),
                                 )
                               : Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: AnimatedOpacity(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: AnimatedOpacity(
                                     opacity: isHistory == false ? 0 : 1,
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeInOutCirc,
@@ -385,7 +394,9 @@ class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObse
                                           child: InkWell(
                                             onTap: () {},
                                             child: Ink(
-                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10),
                                               decoration: BoxDecoration(
                                                 border: Border(
                                                   top: const BorderSide(
@@ -407,7 +418,8 @@ class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObse
                                                     "${i + 1}.",
                                                     style: const TextStyle(
                                                       fontFamily: 'Serif',
-                                                      fontWeight: FontWeight.w500,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                       fontSize: 16,
                                                     ),
                                                   ),
@@ -417,7 +429,8 @@ class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObse
                                                   )),
                                                   Column(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       AutoSizeText(
                                                         historyItem[i]

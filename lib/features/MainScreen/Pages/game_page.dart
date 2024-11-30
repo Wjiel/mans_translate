@@ -214,8 +214,12 @@ class GamePage extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 20),
               child: Text(
-                "С русского",
-                style: TextStyle(),
+                "Русский - Мансийский",
+                style: TextStyle(
+                  fontFamily: 'Serif',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
             SizedBox(
@@ -239,13 +243,13 @@ class GamePage extends StatelessWidget {
                     },
                   ),
                   Cards(
-                    URLImage: "da",
+                    URLImage: "assets/images/taskfraz.png",
                     NameTask: "Фразы",
                     DescriptionTask: "Составьте из блоков перевод фразы",
                     function: () {},
                   ),
                   Cards(
-                    URLImage: "da",
+                    URLImage: "assets/images/taskpredloz.png",
                     NameTask: "Предложения",
                     DescriptionTask: "Напишите перевод предложения",
                     function: () {},
@@ -255,7 +259,14 @@ class GamePage extends StatelessWidget {
             ),
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 20),
-              child: Text("С мансийского"),
+              child: Text(
+                "Майнсийский - Русский",
+                style: TextStyle(
+                  fontFamily: 'Serif',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
             SizedBox(
               height: 200 + 20 * (size.height / 2400),

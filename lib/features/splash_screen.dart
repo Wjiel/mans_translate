@@ -22,6 +22,8 @@ class _SplashScreenState extends State<SplashScreen> {
     "assets/images/taskword.png",
     "assets/images/taskwordmans.png",
     "assets/images/alphab.png",
+    "assets/images/taskfraz.png",
+    "assets/images/taskpredloz.png",
   ];
 
   @override
