@@ -289,13 +289,13 @@ class GamePage extends StatelessWidget {
                     },
                   ),
                   Cards(
-                    URLImage: "da",
+                    URLImage: "assets/images/taskfrazmans.png",
                     NameTask: "Фразы",
                     DescriptionTask: "Составьте из блоков перевод фразы",
                     function: () {},
                   ),
                   Cards(
-                    URLImage: "da",
+                    URLImage: "assets/images/taskpredlozmans.png",
                     NameTask: "Предложения",
                     DescriptionTask: "Напишите перевод предложения",
                     function: () {},
