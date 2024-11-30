@@ -1,3 +1,4 @@
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:clipboard_watcher/clipboard_watcher.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +8,19 @@ import 'package:mans_translate/Config/ThemesData/themes_data.dart';
 import 'package:mans_translate/features/MainScreen/Pages/translator_page.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/paste_button.dart';
 
-class CardTranslating extends StatelessWidget with ClipboardListener {
-  CardTranslating({
-    super.key,
-  });
+class CardTranslating extends StatefulWidget {
+  CardTranslating({super.key,});
 
+  @override
+  State<CardTranslating> createState() => _CardTranslatingState();
+}
+
+class _CardTranslatingState extends State<CardTranslating> with ClipboardListener {
   final TextEditingController _textEditingController = TextEditingController();
+
   final StreamController _copyController = StreamController();
+
+  FocusNode _focus = FocusNode();
 
   final List<String> _mansiLetters = [
     "ā",
@@ -37,10 +44,13 @@ class CardTranslating extends StatelessWidget with ClipboardListener {
     }
   }
 
-  void _sendTextToAPI() {
-    String text = _textEditingController.text;
-    if (isRussian == true) {
-    } else {}
+  void _sendTextToAPI(){
+    String _text = _textEditingController.text;
+    if(isRussian == true){
+
+    } else {
+
+    }
   }
 
   Stream _copyStream() {
@@ -56,13 +66,15 @@ class CardTranslating extends StatelessWidget with ClipboardListener {
   @override
   Future<void> onClipboardChanged() async {
     ClipboardData? newClipboardData =
-        await Clipboard.getData(Clipboard.kTextPlain);
-    if (newClipboardData?.text != null && newClipboardData?.text != "") {
+    await Clipboard.getData(Clipboard.kTextPlain);
+    if(newClipboardData?.text != null && newClipboardData?.text != ""){
       _copyController.add(true);
-    } else {
+    }
+    else {
       _copyController.add(false);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,36 +99,35 @@ class CardTranslating extends StatelessWidget with ClipboardListener {
             ),
           ),
           Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                TextField(
-                  controller: _textEditingController,
-                  onChanged: (text) {
-                    Timer(const Duration(seconds: 1), () {
-                      if (text == _textEditingController.text) {
-                        _sendTextToAPI();
-                      }
-                    });
-                  },
-                  maxLines: null,
-                  style: TextStyle(
-                    fontFamily: themeData.textTheme.bodySmall!.fontFamily,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 18,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: 'Введите текст...',
-                    hintStyle: TextStyle(
-                      color: textColor,
-                      fontFamily: themeData.textTheme.bodySmall!.fontFamily,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18,
-                    ),
-                    border: InputBorder.none,
-                  ),
+            child: TextField(
+              onTapOutside: (tap){
+                _focus.unfocus();
+              },
+              focusNode: _focus,
+              controller: _textEditingController,
+              onChanged: (text){
+                Timer(Duration(seconds: 1), () {
+                  if(text == _textEditingController.text){
+                    _sendTextToAPI();
+                  }
+                });
+              },
+              maxLines: null,
+              style: TextStyle(
+                fontFamily: themeData.textTheme.bodySmall!.fontFamily,
+                fontWeight: FontWeight.w500,
+                fontSize: 18,
+              ),
+              decoration: InputDecoration(
+                hintText: 'Введите текст...',
+                hintStyle: TextStyle(
+                  color: textColor,
+                  fontFamily: themeData.textTheme.bodySmall!.fontFamily,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
                 ),
-              ],
+                border: InputBorder.none,
+              ),
             ),
           ),
           AnimatedOpacity(
@@ -138,7 +149,7 @@ class CardTranslating extends StatelessWidget with ClipboardListener {
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, i) {
                         return Padding(
-                          padding: EdgeInsets.only(left: i == 0 ? 0 : 15),
+                          padding: EdgeInsets.only(left: i == 0? 0 : 15),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(5),
                             onTap: () {
@@ -180,7 +191,6 @@ class CardTranslating extends StatelessWidget with ClipboardListener {
           StreamBuilder(
             stream: _copyStream(),
             builder: (context, snapshot) {
-              print(snapshot.data);
               if (!snapshot.hasData) {
                 return const SizedBox();
               }

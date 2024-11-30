@@ -33,7 +33,52 @@ class TranslatorPage extends StatefulWidget {
   State<TranslatorPage> createState() => _TranslatorPageState();
 }
 
-class _TranslatorPageState extends State<TranslatorPage> {
+class _TranslatorPageState extends State<TranslatorPage> with WidgetsBindingObserver {
+
+  final StreamController _keyboardController = StreamController();
+
+  Stream _focusStream() {
+    _keyboardController.add(false);
+
+    return _keyboardController.stream;
+  }
+
+  var isKeyboardOpen = false;
+  ///
+  /// This routine is invoked when the window metrics have changed.
+  ///
+  @override
+  void didChangeMetrics() {
+    final value = View.of(context).viewInsets.bottom;
+    if (value == 0) {
+      if (isKeyboardOpen) {
+        _onKeyboardChanged(false);
+      }
+      isKeyboardOpen = false;
+    } else {
+      isKeyboardOpen = true;
+      _onKeyboardChanged(true);
+    }
+  }
+  _onKeyboardChanged(bool isVisible) {
+    Timer(Duration(milliseconds: 300), () {
+      if (isVisible) {
+        setState(() {
+          _translatingFlex = 2;
+        });
+      } else {
+        setState(() {
+          _translatingFlex = 1;
+        });
+      }
+    });
+
+  }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
   void copyText() {
     Clipboard.setData(
       ClipboardData(text: translateText),
@@ -43,6 +88,7 @@ class _TranslatorPageState extends State<TranslatorPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   void changeCard() {
@@ -62,6 +108,10 @@ class _TranslatorPageState extends State<TranslatorPage> {
     });
   }
 
+  int _translatingFlex = 1;
+
+
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -73,6 +123,7 @@ class _TranslatorPageState extends State<TranslatorPage> {
             children: [
               // ignore: prefer_const_constructors
               Expanded(
+                flex: _translatingFlex,
                 // ignore: prefer_const_constructors
                 child: AnimatedScale(
                   scale: scale,
