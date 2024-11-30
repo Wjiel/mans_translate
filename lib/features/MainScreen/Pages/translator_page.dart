@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:mans_translate/Config/Colors/colors_data.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/card_translated.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/card_translating.dart';
+import 'package:rive/rive.dart';
 
 Color textColor = const Color(0xFFA8A8A8);
 
@@ -25,7 +26,7 @@ double opacity = 1;
 double scale = 1;
 
 class ResultTextClass {
-  final StreamController _resultTextController = StreamController();
+  final StreamController _resultTextController = StreamController.broadcast();
   String _resultText = "";
 
   set resultText(String result) {
@@ -52,10 +53,16 @@ class _TranslatorPageState extends State<TranslatorPage>
     with WidgetsBindingObserver {
   final ResultTextClass _resultTextClass = ResultTextClass();
   late Stream _resultTextStream;
+  final TextEditingController _sourceEditingController = TextEditingController();
   late StreamController _resultStreamController;
 
 
   bool isKeyboardOpen = false;
+
+  Artboard? _arrowsArtboard;
+  SMITrigger? trigger;
+  StateMachineController? stateMachineController;
+
 
   @override
   void didChangeMetrics() {
@@ -103,9 +110,32 @@ class _TranslatorPageState extends State<TranslatorPage>
     WidgetsBinding.instance.addObserver(this);
     _resultTextStream = _resultTextClass.resultTextStream();
     _resultStreamController = _resultTextClass._resultTextController;
+    _loadArrowAnim();
   }
 
-  void changeCard() {
+  void _loadArrowAnim() {
+    rootBundle.load('assets/animations/switchArrows.riv').then(
+          (data) {
+        final file = RiveFile.import(data);
+        final artboard = file.mainArtboard;
+        stateMachineController =
+            StateMachineController.fromArtboard(artboard, "State Machine 1");
+        if (stateMachineController != null) {
+          artboard.addController(stateMachineController!);
+          trigger = stateMachineController!.findSMI('Trigger 1');
+
+          stateMachineController!.inputs.forEach((e) {
+
+          });
+          trigger = stateMachineController!.inputs.first as SMITrigger;
+        }
+
+        setState(() => _arrowsArtboard = artboard);
+      },
+    );
+  }
+
+  void changeCard(znach) {
     setState(() {
       isHistory = false;
 
@@ -117,6 +147,10 @@ class _TranslatorPageState extends State<TranslatorPage>
         opacity = 1;
         scale = 1;
         isRussian = !isRussian;
+        String sourceText = _sourceEditingController.text;
+        String resultText = znach;
+        _resultStreamController.add(sourceText);
+        _sourceEditingController.text = resultText;
       });
       ce.cancel();
     });
@@ -143,6 +177,7 @@ class _TranslatorPageState extends State<TranslatorPage>
                   curve: Curves.easeInOutCirc,
                   // ignore: prefer_const_constructors
                   child: CardTranslating(
+                    sourceEditingController: _sourceEditingController,
                     resultTextClass: _resultTextClass,
                     resultTextStreamController: _resultStreamController,
                   ),
@@ -152,16 +187,21 @@ class _TranslatorPageState extends State<TranslatorPage>
                 height: 70 + 5 * (size.width / 1080),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(10),
-                    onTap: () {
-                      changeCard();
-                    },
-                    child: Image.asset(
-                      'assets/images/arrows.png',
-                      color: Tertiary,
-                      width: 35 + 5 * (size.width / 1080),
-                    ),
+                  child: StreamBuilder(
+                    stream: _resultTextStream,
+                    builder: (context, snapshot) {
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(10),
+                        onTap: () {
+                          changeCard(snapshot.data ?? "");
+                          trigger?.fire();
+                        },
+                        child: _arrowsArtboard != null ? Rive(
+                          artboard: _arrowsArtboard!,
+                          fit: BoxFit.scaleDown,
+                        ) : SizedBox(),
+                      );
+                    }
                   ),
                 ),
               ),

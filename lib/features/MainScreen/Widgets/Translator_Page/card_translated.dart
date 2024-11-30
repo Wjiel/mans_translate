@@ -3,12 +3,16 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mans_translate/Config/Colors/colors_data.dart';
 import 'package:mans_translate/Config/ThemesData/themes_data.dart';
 import 'package:mans_translate/features/MainScreen/Pages/translator_page.dart';
 import 'package:mans_translate/features/Widgets/custom_alertdialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:rive/rive.dart';
+import 'package:flutter/src/widgets/image.dart' as Image;
 class CardTranslated extends StatefulWidget {
   Function copyText;
   final ResultTextClass resultTextClass;
@@ -25,8 +29,7 @@ class CardTranslated extends StatefulWidget {
 
 bool isHistory = false;
 
-class _CardTranslatedState extends State<CardTranslated>
-    with WidgetsBindingObserver {
+class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObserver {
   List<String> facts = [];
 
   int randomNumber = 0;
@@ -51,14 +54,13 @@ class _CardTranslatedState extends State<CardTranslated>
     setState(() {});
   }
 
-  Map<String, dynamic> mapHistory = {};
   List historyItem = [
     {
       "sourceText": "Дома бегают дети",
       "targetText": "Дем лак щш",
       "isRussian": true,
       "index": 1,
-    }
+    },
   ];
 
   double heightInfoFacts = 60;
@@ -68,6 +70,85 @@ class _CardTranslatedState extends State<CardTranslated>
 
   bool isKeyboardOpen = false;
   bool _isKeyboardOpen = false;
+
+  Artboard? _copyArtboard;
+  SMITrigger? copyTrigger;
+  StateMachineController? copyStateMachineController;
+
+  Artboard? _historyArtboard;
+  SMITrigger? historyTrigger;
+  StateMachineController? historyStateMachineController;
+
+  Artboard? _emptyHistoryArtboard;
+  SMITrigger? emptyHistoryTrigger;
+  StateMachineController? emptyHistoryStateMachineController;
+
+  void _copyAnim() {
+    rootBundle.load('assets/animations/copy.riv').then(
+          (data) {
+        final file = RiveFile.import(data);
+        final artboard = file.mainArtboard;
+        copyStateMachineController =
+            StateMachineController.fromArtboard(artboard, "State Machine 1");
+        if (copyStateMachineController != null) {
+          artboard.addController(copyStateMachineController!);
+          copyTrigger = copyStateMachineController!.findSMI('Trigger 1');
+
+          copyStateMachineController!.inputs.forEach((e) {
+            debugPrint(e.runtimeType.toString());
+            debugPrint("name${e.name}End");
+          });
+          copyTrigger = copyStateMachineController!.inputs.first as SMITrigger;
+        }
+
+        setState(() => _copyArtboard = artboard);
+      },
+    );
+  }
+
+  void _historyAnim() {
+    rootBundle.load('assets/animations/history.riv').then(
+          (data) {
+        final file = RiveFile.import(data);
+        final artboard = file.mainArtboard;
+        historyStateMachineController =
+            StateMachineController.fromArtboard(artboard, "State Machine 1");
+        if (historyStateMachineController != null) {
+          artboard.addController(historyStateMachineController!);
+          historyTrigger = historyStateMachineController!.findSMI('Trigger 1');
+
+          historyStateMachineController!.inputs.forEach((e) {
+
+          });
+          historyTrigger = historyStateMachineController!.inputs.first as SMITrigger;
+        }
+
+        setState(() => _historyArtboard = artboard);
+      },
+    );
+  }
+
+  void _emptyHistoryAnim() {
+    rootBundle.load('assets/animations/emptyHistory.riv').then(
+          (data) {
+        final file = RiveFile.import(data);
+        final artboard = file.mainArtboard;
+        emptyHistoryStateMachineController =
+            StateMachineController.fromArtboard(artboard, "State Machine 1");
+        if (emptyHistoryStateMachineController != null) {
+          artboard.addController(emptyHistoryStateMachineController!);
+          emptyHistoryTrigger = emptyHistoryStateMachineController!.findSMI('Trigger 1');
+
+          emptyHistoryStateMachineController!.inputs.forEach((e) {
+
+          });
+          emptyHistoryTrigger = emptyHistoryStateMachineController!.inputs.first as SMITrigger;
+        }
+
+        setState(() => _emptyHistoryArtboard = artboard);
+      },
+    );
+  }
 
   @override
   void didChangeMetrics() {
@@ -109,6 +190,9 @@ class _CardTranslatedState extends State<CardTranslated>
     WidgetsBinding.instance.addObserver(this);
     _resultTextClass = widget.resultTextClass;
     _resultTextStream = widget.resultTextStream;
+    _copyAnim();
+    _historyAnim();
+    _emptyHistoryAnim();
 
     initFirebaseFacts();
   }
@@ -141,28 +225,49 @@ class _CardTranslatedState extends State<CardTranslated>
                 height: 30 + 20 * (size.height / 2400),
                 child: Row(
                   children: [
-                    Visibility(
-                      visible: _resultTextClass.resultText.isNotEmpty,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(5),
-                        onTap: () {
-                          widget.copyText();
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(Icons.copy, color: Tertiary),
-                        ),
-                      ),
+                    StreamBuilder(
+                      stream: _resultTextStream,
+                      initialData: "",
+                      builder: (context, snapshot) {
+                        return Visibility(
+                          visible: snapshot.data.isNotEmpty,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () {
+                              Fluttertoast.showToast(msg: "Скопировано!");
+                              _resultTextClass.resultText = snapshot.data;
+                              widget.copyText();
+                              copyTrigger?.fire();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: _copyArtboard != null ? Transform.scale(
+                                scale: 1.5,
+                                child: Rive(
+                                  useArtboardSize: true,
+                                  artboard: _copyArtboard!,
+                                  fit: BoxFit.scaleDown,
+                                ),
+                              ) : SizedBox(),
+                            ),
+                          ),
+                        );
+                      }
                     ),
+                    SizedBox(width: 10,),
                     InkWell(
                       borderRadius: BorderRadius.circular(5),
                       onTap: () {
                         setState(() {
                           isHistory = !isHistory;
+                          historyTrigger?.fire();
+                          if(historyItem.isEmpty){
+                            emptyHistoryTrigger?.fire();
+                          }
                         });
                       },
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(4.0),
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           decoration: BoxDecoration(
@@ -171,16 +276,18 @@ class _CardTranslatedState extends State<CardTranslated>
                               isHistory
                                   ? const BoxShadow(
                                       spreadRadius: 5,
-                                      color: Tertiary,
+                                      color: Color(0x665C8BE1),
                                     )
                                   : const BoxShadow(color: Colors.white),
                             ],
                           ),
-                          child: Image.asset(
-                            isHistory == false
-                                ? 'assets/images/time.png'
-                                : 'assets/images/time_outline.png',
-                            color: Primary,
+                          child:  Transform.scale(
+                            scale: 1,
+                            child: _historyArtboard != null ? Rive(
+                              useArtboardSize: true,
+                              artboard: _historyArtboard!,
+                              fit: BoxFit.scaleDown,
+                            ) : SizedBox(),
                           ),
                         ),
                       ),
@@ -238,9 +345,17 @@ class _CardTranslatedState extends State<CardTranslated>
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Image.asset(
-                                          'assets/images/noneText.png',
+                                        SizedBox(
+                                          height: 80,
                                           width: 80,
+                                          child: Transform.scale(
+                                            scale: 1,
+                                            child: _emptyHistoryArtboard != null ? Rive(
+                                              useArtboardSize: true,
+                                              artboard: _emptyHistoryArtboard!,
+                                              fit: BoxFit.scaleDown,
+                                            ) : SizedBox(),
+                                          ),
                                         ),
                                         Text(
                                           'Тут пока ничего нет',
@@ -256,83 +371,87 @@ class _CardTranslatedState extends State<CardTranslated>
                                     ),
                                   ),
                                 )
-                              : AnimatedOpacity(
-                                  opacity: isHistory == false ? 0 : 1,
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOutCirc,
-                                  child: ListView.builder(
-                                    itemCount: historyItem.length,
-                                    itemBuilder: (context, i) {
-                                      return Material(
-                                        color: Colors.transparent,
-                                        child: InkWell(
-                                          onTap: () {},
-                                          child: Ink(
-                                            decoration: BoxDecoration(
-                                              border: Border(
-                                                top: const BorderSide(
-                                                  color: Color(0xFFC5C5C5),
-                                                  width: 1,
+                              : Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: AnimatedOpacity(
+                                    opacity: isHistory == false ? 0 : 1,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInOutCirc,
+                                    child: ListView.builder(
+                                      itemCount: historyItem.length,
+                                      itemBuilder: (context, i) {
+                                        return Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            onTap: () {},
+                                            child: Ink(
+                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  top: const BorderSide(
+                                                    color: Color(0xFFC5C5C5),
+                                                    width: 1,
+                                                  ),
+                                                  bottom: i ==
+                                                          historyItem.length - 1
+                                                      ? const BorderSide(
+                                                          color:
+                                                              Color(0xFFC5C5C5),
+                                                        )
+                                                      : BorderSide.none,
                                                 ),
-                                                bottom: i ==
-                                                        historyItem.length - 1
-                                                    ? const BorderSide(
-                                                        color:
-                                                            Color(0xFFC5C5C5),
-                                                      )
-                                                    : BorderSide.none,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    "${i + 1}.",
+                                                    style: const TextStyle(
+                                                      fontFamily: 'Serif',
+                                                      fontWeight: FontWeight.w500,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  const Flexible(
+                                                      child: SizedBox(
+                                                    width: 10,
+                                                  )),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      AutoSizeText(
+                                                        historyItem[i]
+                                                            ['sourceText'],
+                                                        style: const TextStyle(
+                                                          fontFamily: 'Slab',
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      AutoSizeText(
+                                                        historyItem[i]
+                                                                ['isRussian']
+                                                            ? 'Русский - Мансийский'
+                                                            : 'Мансийский - Русский',
+                                                        style: const TextStyle(
+                                                          color:
+                                                              Color(0xFF8B8B8B),
+                                                          fontFamily: 'Slab',
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
                                               ),
                                             ),
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  "${i + 1}.",
-                                                  style: const TextStyle(
-                                                    fontFamily: 'Serif',
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                                const Flexible(
-                                                    child: SizedBox(
-                                                  width: 10,
-                                                )),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    AutoSizeText(
-                                                      historyItem[i]
-                                                          ['sourceText'],
-                                                      style: const TextStyle(
-                                                        fontFamily: 'Slab',
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    AutoSizeText(
-                                                      historyItem[i]
-                                                              ['isRussian']
-                                                          ? 'Русский - Мансийский'
-                                                          : 'Мансийский - Русский',
-                                                      style: const TextStyle(
-                                                        color:
-                                                            Color(0xFF8B8B8B),
-                                                        fontFamily: 'Slab',
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
+                                        );
+                                      },
+                                    ),
                                   ),
                                 )
                           : const SizedBox.shrink(),
@@ -385,7 +504,7 @@ class _CardTranslatedState extends State<CardTranslated>
                             ),
                             child: Row(
                               children: [
-                                Image.asset('assets/images/info.png'),
+                                Image.Image.asset('assets/images/info.png'),
                                 const Flexible(
                                   child: SizedBox(
                                     width: 10,

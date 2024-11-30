@@ -14,14 +14,15 @@ import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/paste
 class CardTranslating extends StatefulWidget {
   final ResultTextClass resultTextClass;
   final StreamController resultTextStreamController;
-  CardTranslating({super.key, required this.resultTextClass, required this.resultTextStreamController,});
+  final TextEditingController sourceEditingController;
+  CardTranslating({super.key, required this.resultTextClass, required this.resultTextStreamController, required this.sourceEditingController,});
 
   @override
   State<CardTranslating> createState() => _CardTranslatingState();
 }
 
 class _CardTranslatingState extends State<CardTranslating> with ClipboardListener {
-  final TextEditingController _textEditingController = TextEditingController();
+  late TextEditingController _textEditingController;
 
   final StreamController _copyController = StreamController();
   late ResultTextClass _resultTextClass;
@@ -48,6 +49,7 @@ class _CardTranslatingState extends State<CardTranslating> with ClipboardListene
     super.initState();
     _resultTextClass = widget.resultTextClass;
     _resultTextStreamController = widget.resultTextStreamController;
+    _textEditingController = widget.sourceEditingController;
   }
 
   void _callback() async {
@@ -157,9 +159,7 @@ class _CardTranslatingState extends State<CardTranslating> with ClipboardListene
                 Timer(Duration(seconds: 1), () {
                   if(text == _textEditingController.text){
                     _sendTextToAPI();
-                    setState(() {
-
-                    });
+                    print("object");
                   }
                 });
               },
