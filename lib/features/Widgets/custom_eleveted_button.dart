@@ -29,7 +29,7 @@ class CustomElevetedButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius),
         ),
         width: size.width,
-        height: 40 + 60 * (size.width / 1080),
+        height: 40 + 30 * (size.width / 1080),
         child: Center(
           child: AutoSizeText(
             text,
