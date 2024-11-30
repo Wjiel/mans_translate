@@ -32,6 +32,16 @@ class GameWord extends StatelessWidget {
   }
 }
 
+class AnswerContainer extends StatelessWidget {
+  String text;
+  AnswerContainer({super.key, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
 class SourceContainer extends StatelessWidget {
   String text;
 
