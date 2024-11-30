@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:mans_translate/Config/Colors/colors_data.dart';
+import 'package:mans_translate/features/Games/game_word.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Game_Page/cards.dart';
 
 class GamePage extends StatelessWidget {
@@ -8,15 +9,16 @@ class GamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: const Color(0xFFE9E9E9),
+      backgroundColor: const Color(0xFFEEF5FD),
       body: SafeArea(
-        child: Column(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
           children: [
             Container(
-              height: 192 + 20 * (MediaQuery.of(context).size.height / 2400),
+              height: 192 + 20 * (size.height / 2400),
               width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.all(20),
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14), color: Colors.white),
@@ -49,7 +51,6 @@ class GamePage extends StatelessWidget {
                     ),
                   ),
                   const Expanded(
-                    flex: 1,
                     child: VerticalDivider(
                       color: Color(0xFF7B7B7B),
                     ),
@@ -153,48 +154,140 @@ class GamePage extends StatelessWidget {
                 ],
               ),
             ),
-            const Text("С русского"),
-            Expanded(
+            SizedBox(
+              height: 10 + 20 * (size.height / 2400),
+            ),
+            InkWell(
+              onTap: () {},
+              borderRadius: BorderRadius.circular(10),
+              child: Ink(
+                width: size.width,
+                height: 100 + 20 * (size.height / 2400),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: shadow,
+                      blurRadius: 12,
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.horizontal(
+                        left: Radius.circular(10),
+                      ),
+                      child: Image.asset('assets/images/alphab.png'),
+                    ),
+                    const Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            AutoSizeText(
+                              'Алфавит',
+                              style: TextStyle(
+                                fontFamily: 'Serif',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            AutoSizeText(
+                              'Изучите написание и произношение Мансийского языка',
+                              style: TextStyle(
+                                fontFamily: 'Slab',
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Text(
+                "С русского",
+                style: TextStyle(),
+              ),
+            ),
+            SizedBox(
+              height: 200 + 20 * (size.height / 2400),
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                children: const [
+                children: [
                   Cards(
-                    URLImage: "assets/images/taskword.png",
+                    URLImage: "assets/images/taskwordmans.png",
                     NameTask: "Слова",
-                    DescriptionTask: "Описание",
+                    DescriptionTask: "Выберите правильный вариант перевода",
+                    function: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GameWord(
+                            isRussian: true,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   Cards(
                     URLImage: "da",
-                    NameTask: "Слова",
-                    DescriptionTask: "Описание",
+                    NameTask: "Фразы",
+                    DescriptionTask: "Составьте из блоков перевод фразы",
+                    function: () {},
                   ),
                   Cards(
                     URLImage: "da",
-                    NameTask: "Слова",
-                    DescriptionTask: "Описание",
+                    NameTask: "Предложения",
+                    DescriptionTask: "Напишите перевод предложения",
+                    function: () {},
                   ),
                 ],
               ),
             ),
-            const Text("С мансийского"),
-            Expanded(
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Text("С мансийского"),
+            ),
+            SizedBox(
+              height: 200 + 20 * (size.height / 2400),
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                children: const [
+                children: [
                   Cards(
-                    URLImage: "da",
+                    URLImage: "assets/images/taskword.png",
                     NameTask: "Слова",
                     DescriptionTask: "Описание",
+                    function: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => GameWord(
+                            isRussian: false,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   Cards(
                     URLImage: "da",
-                    NameTask: "Слова",
-                    DescriptionTask: "Описание",
+                    NameTask: "Фразы",
+                    DescriptionTask: "Составьте из блоков перевод фразы",
+                    function: () {},
                   ),
                   Cards(
                     URLImage: "da",
-                    NameTask: "Слова",
-                    DescriptionTask: "Описание",
+                    NameTask: "Предложения",
+                    DescriptionTask: "Напишите перевод предложения",
+                    function: () {},
                   ),
                 ],
               ),

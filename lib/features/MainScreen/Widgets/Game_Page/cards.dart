@@ -5,11 +5,13 @@ class Cards extends StatelessWidget {
   final String URLImage;
   final String NameTask;
   final String DescriptionTask;
-  const Cards({
+  Function function;
+  Cards({
     super.key,
     required this.URLImage,
     required this.NameTask,
     required this.DescriptionTask,
+    required this.function,
   });
 
   @override
@@ -17,9 +19,11 @@ class Cards extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     const double radius = 10;
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.only(right: 20),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          function();
+        },
         borderRadius: BorderRadius.circular(radius),
         child: Ink(
           height: size.height,
