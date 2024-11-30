@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:mans_translate/Config/Colors/colors_data.dart';
 import 'package:mans_translate/Config/ThemesData/themes_data.dart';
 import 'package:mans_translate/features/MainScreen/Pages/translator_page.dart';
 import 'package:mans_translate/features/Widgets/custom_alertdialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CardTranslated extends StatefulWidget {
   Function copyText;
@@ -25,6 +27,30 @@ bool isHistory = false;
 
 class _CardTranslatedState extends State<CardTranslated>
     with WidgetsBindingObserver {
+  List<String> facts = [];
+
+  int randomNumber = 0;
+
+  bool isReady = false;
+
+  Future<void> initFirebaseFacts() async {
+    var db = FirebaseFirestore.instance;
+    await db.collection("Facts").get().then((QuerySnapshot querySnapshot) {
+      for (var docSnapshot in querySnapshot.docs) {
+        Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+        facts.add(data["text_facts"]);
+      }
+    });
+
+    int random(int min, int max) {
+      return min + Random().nextInt(max - min);
+    }
+
+    randomNumber = random(0, facts.length);
+    isReady = true;
+    setState(() {});
+  }
+
   Map<String, dynamic> mapHistory = {};
   List historyItem = [
     {
@@ -83,6 +109,8 @@ class _CardTranslatedState extends State<CardTranslated>
     WidgetsBinding.instance.addObserver(this);
     _resultTextClass = widget.resultTextClass;
     _resultTextStream = widget.resultTextStream;
+
+    initFirebaseFacts();
   }
 
   @override
@@ -244,6 +272,7 @@ class _CardTranslatedState extends State<CardTranslated>
                                               border: Border(
                                                 top: const BorderSide(
                                                   color: Color(0xFFC5C5C5),
+                                                  width: 1,
                                                 ),
                                                 bottom: i ==
                                                         historyItem.length - 1
@@ -319,84 +348,89 @@ class _CardTranslatedState extends State<CardTranslated>
                   onEnd: () {
                     heightInfoFacts = 0;
                   },
-                  child: InkWell(
-                    onTap: () {
-                      showCustomAlertDialog(
-                        context,
-                        "Интересный факт",
-                        () {
-                          Navigator.of(context).pop();
-                        },
-                        const Text(
-                          "Язык манси входит в обширную группу финно-угорских языков и, согласно исследованиям, больше всего схож с венгерским.",
-                          style: TextStyle(
-                            fontFamily: "Slab",
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      );
-                    },
-                    borderRadius: BorderRadius.circular(10),
-                    child: Ink(
-                      height: 60,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: const [
-                          BoxShadow(
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                            color: shadow,
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Image.asset('assets/images/info.png'),
-                          const Flexible(
-                            child: SizedBox(
-                              width: 10,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 9,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Expanded(
-                                  child: AutoSizeText(
-                                    'Интересные факты',
-                                    minFontSize: 1,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                    ),
-                                  ),
+                  child: isReady
+                      ? InkWell(
+                          onTap: () {
+                            showCustomAlertDialog(
+                              context,
+                              "Интересный факт",
+                              () {
+                                Navigator.of(context).pop();
+                              },
+                              Text(
+                                facts[randomNumber],
+                                style: const TextStyle(
+                                  fontFamily: "Slab",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
                                 ),
-                                Expanded(
-                                  child: Text(
-                                    'Манси использовали шкуру енотов для',
-                                    style: TextStyle(
-                                      color: textColor,
-                                      fontFamily: themeData
-                                          .textTheme.bodySmall!.fontFamily,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
+                              ),
+                            );
+                          },
+                          borderRadius: BorderRadius.circular(10),
+                          child: Ink(
+                            height: 60,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 15),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: const [
+                                BoxShadow(
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                  color: shadow,
                                 ),
                               ],
                             ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                            child: Row(
+                              children: [
+                                Image.asset('assets/images/info.png'),
+                                const Flexible(
+                                  child: SizedBox(
+                                    width: 10,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 9,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Expanded(
+                                        child: AutoSizeText(
+                                          'Интересные факты',
+                                          minFontSize: 1,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: AutoSizeText(
+                                          facts[randomNumber],
+                                          minFontSize: 12,
+                                          style: TextStyle(
+                                            color: textColor,
+                                            fontFamily: themeData.textTheme
+                                                .bodySmall!.fontFamily,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
                 )
               : const SizedBox.shrink(),
         ],

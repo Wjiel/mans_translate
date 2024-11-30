@@ -13,6 +13,8 @@ dependencies:
   auto_size_text: ^3.0.0
   clipboard_watcher: ^0.3.0
   http: ^1.2.2
+  firebase_core: ^3.6.0
+  cloud_firestore: ^5.4.4
 
 dev_dependencies:
   flutter_test:

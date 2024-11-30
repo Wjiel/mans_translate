@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "833708019072",
+    "project_id": "mans-trans",
+    "storage_bucket": "mans-trans.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833708019072:android:38f6a8d4babd6f1db18565",
+        "android_client_info": {
+          "package_name": "com.example.mans_translate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCM1r3CePv56mCk6hHhVYUZsoT92JZn0TA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
