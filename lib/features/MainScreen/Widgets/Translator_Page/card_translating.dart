@@ -10,6 +10,7 @@ import 'dart:async';
 import 'package:mans_translate/Config/ThemesData/themes_data.dart';
 import 'package:mans_translate/features/MainScreen/Pages/translator_page.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/paste_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CardTranslating extends StatefulWidget {
   final ResultTextClass resultTextClass;
@@ -99,6 +100,15 @@ class _CardTranslatingState extends State<CardTranslating> with ClipboardListene
         _resultTextStreamController.add(resultText);
 
     }
+  }
+
+  Future<void> _getHistory() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<void> _addHistory() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
   }
 
 
@@ -205,6 +215,7 @@ class _CardTranslatingState extends State<CardTranslating> with ClipboardListene
                             borderRadius: BorderRadius.circular(5),
                             onTap: () {
                               _textEditingController.text += _mansiLetters[i];
+                              _sendTextToAPI();
                             },
                             child: Ink(
                               decoration: BoxDecoration(
