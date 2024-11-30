@@ -155,143 +155,117 @@ class _CardTranslatedState extends State<CardTranslated>
             ],
           ),
           Expanded(
-            child: Stack(
-              children: [
-                AnimatedOpacity(
-                  opacity: isHistory ? 0 : 1,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOutCirc,
-                  child: ListView(
-                    children: [
-                      translateText.isNotEmpty
-                          ? SelectableText(
-                              style: TextStyle(
-                                fontFamily:
-                                    themeData.textTheme.bodySmall!.fontFamily,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18,
-                              ),
-                              translateText,
-                            )
-                          : Text(
-                              "Здесь будет результат",
-                              style: TextStyle(
-                                color: textColor,
-                                fontFamily:
-                                    themeData.textTheme.bodySmall!.fontFamily,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18,
-                              ),
-                            ),
-                    ],
-                  ),
-                ),
-                isHistory
-                    ? historyItem.isEmpty
-                        ? Center(
-                            child: AnimatedOpacity(
-                              opacity: isHistory == false ? 0 : 1,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOutCirc,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/noneText.png',
-                                    width: 80,
-                                  ),
-                                  Text(
-                                    'Тут пока ничего нет',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: themeData
-                                          .textTheme.bodySmall!.fontFamily,
-                                      color: const Color(0xFF606060),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
-                        : AnimatedOpacity(
-                            opacity: isHistory == false ? 0 : 1,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOutCirc,
-                            child: ListView.builder(
-                              itemCount: historyItem.length,
-                              itemBuilder: (context, i) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      top: const BorderSide(
-                                          color: Color(0xFFC5C5C5)),
-                                      bottom: i == historyItem.length - 1
-                                          ? const BorderSide(
-                                              color: Color(0xFFC5C5C5),
-                                            )
-                                          : BorderSide.none,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "${i + 1}.",
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-                    : const SizedBox.shrink(),
-              ],
-            ),
-          ),
-          AnimatedOpacity(
-            opacity: isHistory || historyItem.isEmpty ? 0 : 1,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOutCirc,
-            onEnd: () {
-              heightInfoFacts = 0;
-            },
-            flex: 3,
             child: StreamBuilder(
                 stream: _resultTextStream,
                 initialData: "",
-                builder: (context, snapshot) {
-                  return ListView(
-                    shrinkWrap: true,
-                    children: [
-                      snapshot.data.isNotEmpty
-                          ? SelectableText(
-                              style: TextStyle(
-                                fontFamily:
-                                    themeData.textTheme.bodySmall!.fontFamily,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18,
-                              ),
-                              snapshot.data,
-                            )
-                          : Text(
-                              "Здесь будет результат",
-                              style: TextStyle(
-                                color: textColor,
-                                fontFamily:
-                                    themeData.textTheme.bodySmall!.fontFamily,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18,
-                              ),
+              builder: (context, snapshot) {
+                return Stack(
+                  children: [
+                    AnimatedOpacity(
+                      opacity: isHistory ? 0 : 1,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOutCirc,
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          snapshot.data.isNotEmpty
+                              ? SelectableText(
+                            style: TextStyle(
+                              fontFamily:
+                              themeData.textTheme.bodySmall!.fontFamily,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
                             ),
-                    ],
-                  );
-                }),
+                            snapshot.data,
+                          )
+                              : Text(
+                            "Здесь будет результат",
+                            style: TextStyle(
+                              color: textColor,
+                              fontFamily:
+                              themeData.textTheme.bodySmall!.fontFamily,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    isHistory
+                        ? historyItem.isEmpty
+                            ? Center(
+                                child: AnimatedOpacity(
+                                  opacity: isHistory == false ? 0 : 1,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOutCirc,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/noneText.png',
+                                        width: 80,
+                                      ),
+                                      Text(
+                                        'Тут пока ничего нет',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: themeData
+                                              .textTheme.bodySmall!.fontFamily,
+                                          color: const Color(0xFF606060),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : AnimatedOpacity(
+                                opacity: isHistory == false ? 0 : 1,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOutCirc,
+                                child: ListView.builder(
+                                  itemCount: historyItem.length,
+                                  itemBuilder: (context, i) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          top: const BorderSide(
+                                              color: Color(0xFFC5C5C5)),
+                                          bottom: i == historyItem.length - 1
+                                              ? const BorderSide(
+                                                  color: Color(0xFFC5C5C5),
+                                                )
+                                              : BorderSide.none,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            "${i + 1}.",
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                        : const SizedBox.shrink(),
+                  ],
+                );
+              }
+            ),
           ),
           _isKeyboardOpen == false
-              ? Expanded(
+              ? AnimatedOpacity(
+            opacity: isHistory || historyItem.isEmpty ? 0 : 1,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOutCirc,
+                  onEnd: () {
+                    heightInfoFacts = 0;
+                  },
                   child: InkWell(
                     onTap: () {
                       showCustomAlertDialog(context, "Интересный факт", () {

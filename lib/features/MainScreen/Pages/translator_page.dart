@@ -54,13 +54,9 @@ class _TranslatorPageState extends State<TranslatorPage>
   late Stream _resultTextStream;
   late StreamController _resultStreamController;
 
+
   bool isKeyboardOpen = false;
 
-  var isKeyboardOpen = false;
-
-  ///
-  /// This routine is invoked when the window metrics have changed.
-  ///
   @override
   void didChangeMetrics() {
     final value = View.of(context).viewInsets.bottom;
