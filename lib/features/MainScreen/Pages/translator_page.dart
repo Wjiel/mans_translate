@@ -6,8 +6,6 @@ import 'package:mans_translate/Config/Colors/colors_data.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/card_translated.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/card_translating.dart';
 
-String translateText = '';
-
 Color textColor = const Color(0xFFA8A8A8);
 
 final decorationContainer = BoxDecoration(
@@ -26,6 +24,23 @@ bool isRussian = false;
 double opacity = 1;
 double scale = 1;
 
+class ResultTextClass {
+  final StreamController _resultTextController = StreamController();
+  String _resultText = "";
+
+  set resultText(String result) {
+    _resultText = result;
+  }
+
+  String get resultText => _resultText;
+
+  Stream resultTextStream() {
+    _resultTextController.add(_resultText);
+
+    return _resultTextController.stream;
+  }
+}
+
 class TranslatorPage extends StatefulWidget {
   const TranslatorPage({super.key});
 
@@ -35,18 +50,13 @@ class TranslatorPage extends StatefulWidget {
 
 class _TranslatorPageState extends State<TranslatorPage> with WidgetsBindingObserver {
 
-  final StreamController _keyboardController = StreamController();
+  ResultTextClass _resultTextClass = ResultTextClass();
+  late Stream _resultTextStream;
+  late StreamController _resultStreamController;
 
-  Stream _focusStream() {
-    _keyboardController.add(false);
 
-    return _keyboardController.stream;
-  }
+  bool isKeyboardOpen = false;
 
-  var isKeyboardOpen = false;
-  ///
-  /// This routine is invoked when the window metrics have changed.
-  ///
   @override
   void didChangeMetrics() {
     final value = View.of(context).viewInsets.bottom;
@@ -81,7 +91,7 @@ class _TranslatorPageState extends State<TranslatorPage> with WidgetsBindingObse
   }
   void copyText() {
     Clipboard.setData(
-      ClipboardData(text: translateText),
+      ClipboardData(text: _resultTextClass.resultText),
     );
   }
 
@@ -89,6 +99,8 @@ class _TranslatorPageState extends State<TranslatorPage> with WidgetsBindingObse
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _resultTextStream = _resultTextClass.resultTextStream();
+    _resultStreamController = _resultTextClass._resultTextController;
   }
 
   void changeCard() {
@@ -130,7 +142,7 @@ class _TranslatorPageState extends State<TranslatorPage> with WidgetsBindingObse
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOutCirc,
                   // ignore: prefer_const_constructors
-                  child: CardTranslating(),
+                  child: CardTranslating(resultTextClass: _resultTextClass, resultTextStreamController: _resultStreamController,),
                 ),
               ),
               SizedBox(
@@ -156,9 +168,10 @@ class _TranslatorPageState extends State<TranslatorPage> with WidgetsBindingObse
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOutCirc,
                 child: CardTranslated(
+                  resultTextClass: _resultTextClass,
                   copyText: () {
                     copyText();
-                  },
+                  }, resultTextStream: _resultTextStream,
                 ),
               )),
             ],

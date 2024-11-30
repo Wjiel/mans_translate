@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:mans_translate/Config/Colors/colors_data.dart';
 import 'package:mans_translate/Config/ThemesData/themes_data.dart';
 import 'package:mans_translate/features/MainScreen/Pages/translator_page.dart';
+import 'package:mans_translate/features/Widgets/custom_alertdialog.dart';
 
 class CardTranslated extends StatefulWidget {
   Function copyText;
-  CardTranslated({super.key, required this.copyText});
+  final ResultTextClass resultTextClass;
+  final Stream resultTextStream;
+  CardTranslated({super.key, required this.copyText, required this.resultTextClass, required this.resultTextStream});
 
   @override
   State<CardTranslated> createState() => _CardTranslatedState();
@@ -14,7 +19,55 @@ class CardTranslated extends StatefulWidget {
 
 bool isHistory = false;
 
-class _CardTranslatedState extends State<CardTranslated> {
+class _CardTranslatedState extends State<CardTranslated> with WidgetsBindingObserver {
+
+  late ResultTextClass _resultTextClass;
+  late Stream _resultTextStream;
+
+  bool isKeyboardOpen = false;
+  bool _isKeyboardOpen = false;
+
+  @override
+  void didChangeMetrics() {
+    final value = View.of(context).viewInsets.bottom;
+    if (value == 0) {
+      if (isKeyboardOpen) {
+        _onKeyboardChanged(false);
+      }
+      isKeyboardOpen = false;
+    } else {
+      isKeyboardOpen = true;
+      _onKeyboardChanged(true);
+    }
+  }
+  _onKeyboardChanged(bool isVisible) {
+    Timer(Duration(milliseconds: 300), () {
+      if (isVisible) {
+        setState(() {
+          _isKeyboardOpen = true;
+        });
+      } else {
+        setState(() {
+          _isKeyboardOpen = false;
+        });
+      }
+    });
+
+  }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _resultTextClass = widget.resultTextClass;
+    _resultTextStream = widget.resultTextStream;
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -44,7 +97,7 @@ class _CardTranslatedState extends State<CardTranslated> {
                 child: Row(
                   children: [
                     Visibility(
-                      visible: translateText.isNotEmpty,
+                      visible: _resultTextClass.resultText.isNotEmpty,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(5),
                         onTap: () {
@@ -96,33 +149,54 @@ class _CardTranslatedState extends State<CardTranslated> {
           ),
           Expanded(
             flex: 3,
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                translateText.isNotEmpty
-                    ? SelectableText(
-                        style: TextStyle(
-                          fontFamily: themeData.textTheme.bodySmall!.fontFamily,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                        ),
-                        translateText,
-                      )
-                    : Text(
-                        "Здесь будет результат",
-                        style: TextStyle(
-                          color: textColor,
-                          fontFamily: themeData.textTheme.bodySmall!.fontFamily,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                        ),
-                      ),
-              ],
+            child: StreamBuilder(
+              stream: _resultTextStream,
+              initialData: "",
+              builder: (context, snapshot) {
+                return ListView(
+                  shrinkWrap: true,
+                  children: [
+                    snapshot.data.isNotEmpty
+                        ? SelectableText(
+                            style: TextStyle(
+                              fontFamily: themeData.textTheme.bodySmall!.fontFamily,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                            ),
+                            snapshot.data,
+                          )
+                        : Text(
+                            "Здесь будет результат",
+                            style: TextStyle(
+                              color: textColor,
+                              fontFamily: themeData.textTheme.bodySmall!.fontFamily,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                            ),
+                          ),
+                  ],
+                );
+              }
             ),
           ),
-          Expanded(
+          _isKeyboardOpen == false? Expanded(
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                showCustomAlertDialog(
+                    context,
+                    "Интересный факт",
+                    () {
+                      Navigator.of(context).pop();
+                    },
+                    Text("Язык манси входит в обширную группу финно-угорских языков и, согласно исследованиям, больше всего схож с венгерским.",
+                      style: TextStyle(
+                          fontFamily: "Slab",
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400
+                      ),
+                    )
+                );
+              },
               borderRadius: BorderRadius.circular(10),
               child: Ink(
                 padding:
@@ -182,7 +256,7 @@ class _CardTranslatedState extends State<CardTranslated> {
                 ),
               ),
             ),
-          ),
+          ) : SizedBox(),
         ],
       ),
     );
