@@ -16,6 +16,10 @@ class _SplashScreenState extends State<SplashScreen> {
     "assets/images/game.png",
     "assets/images/translate_outline.png",
     "assets/images/translate.png",
+    "assets/images/time.png",
+    "assets/images/time_outline.png",
+    "assets/images/noneText.png",
+    "assets/images/taskword.png",
   ];
 
   @override
