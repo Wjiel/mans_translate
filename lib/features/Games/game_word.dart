@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:mans_translate/Config/Colors/colors_data.dart';
 import 'package:mans_translate/features/Games/Widgets/answer_container.dart';
 import 'package:mans_translate/features/Widgets/custom_eleveted_button.dart';
 
@@ -76,8 +77,14 @@ class GameWord extends StatelessWidget {
                       vertical: 20,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE7E7E7),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(50),
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 10,
+                          color: shadow,
+                        )
+                      ],
                     ),
                     width: size.width,
                     height: 40 + 30 * (size.width / 1080),
