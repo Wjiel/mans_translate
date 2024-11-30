@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -6,6 +5,7 @@ import 'package:clipboard_watcher/clipboard_watcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:mans_translate/Config/Colors/colors_data.dart';
 import 'dart:async';
 import 'package:mans_translate/Config/ThemesData/themes_data.dart';
 import 'package:mans_translate/features/MainScreen/Pages/translator_page.dart';
@@ -16,20 +16,26 @@ class CardTranslating extends StatefulWidget {
   final ResultTextClass resultTextClass;
   final StreamController resultTextStreamController;
   final TextEditingController sourceEditingController;
-  CardTranslating({super.key, required this.resultTextClass, required this.resultTextStreamController, required this.sourceEditingController,});
+  const CardTranslating({
+    super.key,
+    required this.resultTextClass,
+    required this.resultTextStreamController,
+    required this.sourceEditingController,
+  });
 
   @override
   State<CardTranslating> createState() => _CardTranslatingState();
 }
 
-class _CardTranslatingState extends State<CardTranslating> with ClipboardListener {
+class _CardTranslatingState extends State<CardTranslating>
+    with ClipboardListener {
   late TextEditingController _textEditingController;
 
   final StreamController _copyController = StreamController();
   late ResultTextClass _resultTextClass;
   late StreamController _resultTextStreamController;
 
-  FocusNode _focus = FocusNode();
+  final FocusNode _focus = FocusNode();
 
   final List<String> _mansiLetters = [
     "ā",
@@ -62,43 +68,45 @@ class _CardTranslatingState extends State<CardTranslating> with ClipboardListene
   }
 
   Future<void> _sendTextToAPI() async {
-    String _text = _textEditingController.text;
+    String text = _textEditingController.text;
 
     if (isRussian == true) {
-      var _body = jsonEncode({
-        "text": _text,
+      var body = jsonEncode({
+        "text": text,
         "sourceLanguage": "rus_Cyrl",
         "targetLanguage": "mancy_Cyrl"
       });
-      var response = await http.post(Uri.parse("http://91.198.71.199:7012/translator"),
-        body: _body,
+      var response = await http.post(
+        Uri.parse("http://91.198.71.199:7012/translator"),
+        body: body,
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/json',
         },
       );
-      String resultText = jsonDecode(utf8.decode(response.bodyBytes))["translatedText"];
+      String resultText =
+          jsonDecode(utf8.decode(response.bodyBytes))["translatedText"];
 
-        _resultTextStreamController.add(resultText);
-
+      _resultTextStreamController.add(resultText);
     } else {
-      var _body = jsonEncode({
-        "text": _text,
+      var body = jsonEncode({
+        "text": text,
         "sourceLanguage": "mancy_Cyrl",
         "targetLanguage": "rus_Cyrl"
       });
-      var response = await http.post(Uri.parse("http://91.198.71.199:7012/translator"),
-        body: _body,
+      var response = await http.post(
+        Uri.parse("http://91.198.71.199:7012/translator"),
+        body: body,
         headers: {
           'accept': 'application/json',
           'Content-Type': 'application/json',
         },
       );
 
-      String resultText = jsonDecode(utf8.decode(response.bodyBytes))["translatedText"];
+      String resultText =
+          jsonDecode(utf8.decode(response.bodyBytes))["translatedText"];
 
-        _resultTextStreamController.add(resultText);
-
+      _resultTextStreamController.add(resultText);
     }
   }
 
@@ -108,10 +116,7 @@ class _CardTranslatingState extends State<CardTranslating> with ClipboardListene
 
   Future<void> _addHistory() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
   }
-
-
 
   Stream _copyStream() {
     clipboardWatcher.addListener(this);
@@ -126,15 +131,13 @@ class _CardTranslatingState extends State<CardTranslating> with ClipboardListene
   @override
   Future<void> onClipboardChanged() async {
     ClipboardData? newClipboardData =
-    await Clipboard.getData(Clipboard.kTextPlain);
-    if(newClipboardData?.text != null && newClipboardData?.text != ""){
+        await Clipboard.getData(Clipboard.kTextPlain);
+    if (newClipboardData?.text != null && newClipboardData?.text != "") {
       _copyController.add(true);
-    }
-    else {
+    } else {
       _copyController.add(false);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -145,31 +148,46 @@ class _CardTranslatingState extends State<CardTranslating> with ClipboardListene
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AnimatedOpacity(
-            opacity: opacity,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOutCirc,
-            child: AutoSizeText(
-              style: const TextStyle(
-                fontFamily: 'Serif',
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AnimatedOpacity(
+                opacity: opacity,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOutCirc,
+                child: AutoSizeText(
+                  style: const TextStyle(
+                    fontFamily: 'Serif',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                  isRussian ? 'Русский' : 'Мансийcкий',
+                ),
               ),
-              isRussian ? 'Русский' : 'Мансийcкий',
-            ),
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {},
+                  borderRadius: BorderRadius.circular(5),
+                  child: const Icon(
+                    Icons.close_outlined,
+                    color: Primary,
+                  ),
+                ),
+              )
+            ],
           ),
           Expanded(
             child: TextField(
-              onTapOutside: (tap){
+              onTapOutside: (tap) {
                 _focus.unfocus();
               },
               focusNode: _focus,
               controller: _textEditingController,
-              onChanged: (text){
-                Timer(Duration(seconds: 1), () {
-                  if(text == _textEditingController.text){
+              onChanged: (text) {
+                Timer(const Duration(seconds: 1), () {
+                  if (text == _textEditingController.text) {
                     _sendTextToAPI();
-                    print("object");
                   }
                 });
               },
@@ -210,7 +228,7 @@ class _CardTranslatingState extends State<CardTranslating> with ClipboardListene
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, i) {
                         return Padding(
-                          padding: EdgeInsets.only(left: i == 0? 0 : 15),
+                          padding: EdgeInsets.only(left: i == 0 ? 0 : 15),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(5),
                             onTap: () {
