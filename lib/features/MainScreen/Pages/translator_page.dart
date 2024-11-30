@@ -33,8 +33,8 @@ class TranslatorPage extends StatefulWidget {
   State<TranslatorPage> createState() => _TranslatorPageState();
 }
 
-class _TranslatorPageState extends State<TranslatorPage> with WidgetsBindingObserver {
-
+class _TranslatorPageState extends State<TranslatorPage>
+    with WidgetsBindingObserver {
   final StreamController _keyboardController = StreamController();
 
   Stream _focusStream() {
@@ -44,6 +44,7 @@ class _TranslatorPageState extends State<TranslatorPage> with WidgetsBindingObse
   }
 
   var isKeyboardOpen = false;
+
   ///
   /// This routine is invoked when the window metrics have changed.
   ///
@@ -60,8 +61,9 @@ class _TranslatorPageState extends State<TranslatorPage> with WidgetsBindingObse
       _onKeyboardChanged(true);
     }
   }
+
   _onKeyboardChanged(bool isVisible) {
-    Timer(Duration(milliseconds: 300), () {
+    Timer(const Duration(milliseconds: 300), () {
       if (isVisible) {
         setState(() {
           _translatingFlex = 2;
@@ -72,13 +74,14 @@ class _TranslatorPageState extends State<TranslatorPage> with WidgetsBindingObse
         });
       }
     });
-
   }
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
+
   void copyText() {
     Clipboard.setData(
       ClipboardData(text: translateText),
@@ -109,8 +112,6 @@ class _TranslatorPageState extends State<TranslatorPage> with WidgetsBindingObse
   }
 
   int _translatingFlex = 1;
-
-
 
   @override
   Widget build(BuildContext context) {
