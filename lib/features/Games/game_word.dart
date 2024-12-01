@@ -4,24 +4,37 @@ import 'package:mans_translate/Config/Colors/colors_data.dart';
 import 'package:mans_translate/features/Games/Widgets/answer_container.dart';
 import 'package:mans_translate/features/Widgets/custom_eleveted_button.dart';
 
-class GameWord extends StatelessWidget {
+class GameWord extends StatefulWidget {
   bool isRussian;
-  GameWord({super.key, required this.isRussian});
+  final Map<String,dynamic> gameMap;
+  GameWord({super.key, required this.isRussian, required this.gameMap});
 
-  Map<String, dynamic> _gameMap = {
-    "sourceText": "Дом",
-    "correctAnswer": "Кол",
-    "secondAnswer": "Кин",
-    "thirdAnswer": "Кас"
-  };
+  @override
+  State<GameWord> createState() => _GameWordState();
+}
+
+class _GameWordState extends State<GameWord> {
+  List<String> _randomMapText = [
+
+  ];
+
+  void _setRandomAnswers() {
+    _randomMapText.addAll([
+      widget.gameMap["correctAnswer"],
+      widget.gameMap["secondAnswer"],
+      widget.gameMap["thirdAnswer"],
+    ]);
+    _randomMapText.shuffle();
+  }
 
   void _isCorrect(context, text) {
-    if(text != _gameMap["correctAnswer"]){
+    _randomMapText.shuffle();
+    if(text != widget.gameMap["correctAnswer"]){
       showModalBottomSheet(
           context: context,
           isDismissible: false,
           builder: (context) {
-            return ModalSheetWrong(correctAnswer: _gameMap["correctAnswer"],);
+            return ModalSheetWrong(correctAnswer: widget.gameMap["correctAnswer"],);
           });
     } else {
       showModalBottomSheet(
@@ -31,6 +44,12 @@ class GameWord extends StatelessWidget {
             return const ModalSheetSuccessful();
           });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _setRandomAnswers();
   }
 
   @override
@@ -54,7 +73,7 @@ class GameWord extends StatelessWidget {
               ),
               const Spacer(flex: 2),
               AutoSizeText(
-                _gameMap["sourceText"],
+                widget.gameMap["sourceText"],
                 minFontSize: 30,
                 style: const TextStyle(
                   color: Color(0xFF0AA10F),
@@ -68,21 +87,21 @@ class GameWord extends StatelessWidget {
               ),
               const Spacer(flex: 5),
               AnswerContainer(
-                text: _gameMap["secondAnswer"],
+                text: _randomMapText[0],
                 function: () {
-                  _isCorrect(context, _gameMap["secondAnswer"]);
+                  _isCorrect(context, _randomMapText[0]);
                 },
               ),
               AnswerContainer(
-                text: _gameMap["correctAnswer"],
+                text: _randomMapText[1],
                 function: () {
-                  _isCorrect(context, _gameMap["correctAnswer"]);
+                  _isCorrect(context, _randomMapText[1]);
                 },
               ),
               AnswerContainer(
-                text: _gameMap["thirdAnswer"],
+                text: _randomMapText[2],
                 function: () {
-                  _isCorrect(context, _gameMap["thirdAnswer"]);
+                  _isCorrect(context, _randomMapText[2]);
                 },
               ),
               const Spacer(

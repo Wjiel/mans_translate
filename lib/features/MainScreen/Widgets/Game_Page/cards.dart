@@ -39,7 +39,9 @@ class Cards extends StatelessWidget {
                   height: size.height,
                   width: size.width,
                   decoration: BoxDecoration(
-                    border: Border.all(),
+                    border: Border.all(
+                      color: Color(0xFF9F9F9F),
+                    ),
                     image: DecorationImage(
                       image: AssetImage(URLImage),
                       fit: BoxFit.cover,

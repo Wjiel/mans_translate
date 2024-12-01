@@ -10,7 +10,7 @@ class MainScreen extends StatelessWidget {
 
   final _pages = [
     TranslatorPage(),
-    const GamePage(),
+     GamePage(),
   ];
 
   @override

@@ -15,11 +15,12 @@ class CardTranslating extends StatefulWidget {
   final ResultTextClass resultTextClass;
   final StreamController resultTextStreamController;
   final TextEditingController sourceEditingController;
+  final List<Map<String,dynamic>> historyItems;
   const CardTranslating({
     super.key,
     required this.resultTextClass,
     required this.resultTextStreamController,
-    required this.sourceEditingController,
+    required this.sourceEditingController, required this.historyItems,
   });
 
   @override
@@ -94,6 +95,15 @@ class _CardTranslatingState extends State<CardTranslating>
           jsonDecode(utf8.decode(response.bodyBytes))["translatedText"];
 
       _resultTextStreamController.add(resultText);
+      widget.historyItems.add({
+        "sourceText": _textEditingController.text,
+        "targetText": resultText,
+        "isRussian": true,
+        "index": widget.historyItems.length+1,
+      });
+      setState(() {
+
+      });
     } else {
       var body = jsonEncode({
         "text": text,
@@ -113,6 +123,17 @@ class _CardTranslatingState extends State<CardTranslating>
           jsonDecode(utf8.decode(response.bodyBytes))["translatedText"];
 
       _resultTextStreamController.add(resultText);
+
+      _resultTextStreamController.add(resultText);
+      widget.historyItems.add({
+        "sourceText": _textEditingController.text,
+        "targetText": resultText,
+        "isRussian": false,
+        "index": widget.historyItems.length+1,
+      });
+      setState(() {
+
+      });
     }
   }
 

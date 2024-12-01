@@ -56,6 +56,7 @@ class _TranslatorPageState extends State<TranslatorPage>
   final TextEditingController _sourceEditingController =
       TextEditingController();
   late StreamController _resultStreamController;
+  List<Map<String,dynamic>> historyItems = [];
 
   bool isKeyboardOpen = false;
 
@@ -180,6 +181,7 @@ class _TranslatorPageState extends State<TranslatorPage>
                   curve: Curves.easeInOutCirc,
                   // ignore: prefer_const_constructors
                   child: CardTranslating(
+                    historyItems: historyItems,
                     sourceEditingController: _sourceEditingController,
                     resultTextClass: _resultTextClass,
                     resultTextStreamController: _resultStreamController,
@@ -215,6 +217,7 @@ class _TranslatorPageState extends State<TranslatorPage>
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOutCirc,
                 child: CardTranslated(
+                  historyItems: historyItems,
                   translatorSetState: _setState,
                   resultStreamController: _resultStreamController,
                   sourceEditingController: _sourceEditingController,

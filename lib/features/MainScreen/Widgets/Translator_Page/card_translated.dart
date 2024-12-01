@@ -21,6 +21,7 @@ class CardTranslated extends StatefulWidget {
   final void Function() translatorSetState;
   final StreamController resultStreamController;
   final TextEditingController sourceEditingController;
+  final List<Map<String,dynamic>> historyItems;
   CardTranslated(
       {super.key,
       required this.copyText,
@@ -28,7 +29,7 @@ class CardTranslated extends StatefulWidget {
       required this.resultTextStream,
         required this.sourceEditingController,
         required this.resultStreamController,
-        required this.translatorSetState});
+        required this.translatorSetState, required this.historyItems});
 
   @override
   State<CardTranslated> createState() => _CardTranslatedState();
@@ -62,13 +63,8 @@ class _CardTranslatedState extends State<CardTranslated>
     setState(() {});
   }
 
-  List historyItem = [
-    {
-      "sourceText": "Дома бегают дети",
-      "targetText": "Дем лак щш",
-      "isRussian": true,
-      "index": 1,
-    },
+  List<Map<String,dynamic>> historyItems = [
+
   ];
 
   double heightInfoFacts = 60;
@@ -92,9 +88,9 @@ class _CardTranslatedState extends State<CardTranslated>
   StateMachineController? emptyHistoryStateMachineController;
 
   void _setHistory(int index) {
-    widget.sourceEditingController.text = historyItem[index]["sourceText"];
-    widget.resultStreamController.add(historyItem[index]["targetText"]);
-    isRussian = historyItem[index]["isRussian"];
+    widget.sourceEditingController.text = historyItems[index]["sourceText"];
+    widget.resultStreamController.add(historyItems[index]["targetText"]);
+    isRussian = historyItems[index]["isRussian"];
     setState(() {
       widget.translatorSetState();
     });
@@ -205,6 +201,7 @@ class _CardTranslatedState extends State<CardTranslated>
     WidgetsBinding.instance.addObserver(this);
     _resultTextClass = widget.resultTextClass;
     _resultTextStream = widget.resultTextStream;
+    historyItems = widget.historyItems;
     _copyAnim();
     _historyAnim();
     _emptyHistoryAnim();
@@ -279,7 +276,7 @@ class _CardTranslatedState extends State<CardTranslated>
                         setState(() {
                           isHistory = !isHistory;
                           historyTrigger?.fire();
-                          if (historyItem.isEmpty) {
+                          if (historyItems.isEmpty) {
                             emptyHistoryTrigger?.fire();
                           }
                         });
@@ -355,7 +352,7 @@ class _CardTranslatedState extends State<CardTranslated>
                         ),
                       ),
                       isHistory
-                          ? historyItem.isEmpty
+                          ? historyItems.isEmpty
                               ? Center(
                                   child: AnimatedOpacity(
                                     opacity: isHistory == false ? 0 : 1,
@@ -401,7 +398,7 @@ class _CardTranslatedState extends State<CardTranslated>
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeInOutCirc,
                                     child: ListView.builder(
-                                      itemCount: historyItem.length,
+                                      itemCount: historyItems.length,
                                       itemBuilder: (context, i) {
                                         return Material(
                                           color: Colors.transparent,
@@ -420,7 +417,7 @@ class _CardTranslatedState extends State<CardTranslated>
                                                     width: 1,
                                                   ),
                                                   bottom: i ==
-                                                          historyItem.length - 1
+                                                          historyItems.length - 1
                                                       ? const BorderSide(
                                                           color:
                                                               Color(0xFFC5C5C5),
@@ -449,7 +446,7 @@ class _CardTranslatedState extends State<CardTranslated>
                                                             .start,
                                                     children: [
                                                       AutoSizeText(
-                                                        historyItem[i]
+                                                        historyItems[i]
                                                             ['sourceText'],
                                                         style: const TextStyle(
                                                           fontFamily: 'Slab',
@@ -459,7 +456,7 @@ class _CardTranslatedState extends State<CardTranslated>
                                                         ),
                                                       ),
                                                       AutoSizeText(
-                                                        historyItem[i]
+                                                        historyItems[i]
                                                                 ['isRussian']
                                                             ? 'Русский - Мансийский'
                                                             : 'Мансийский - Русский',
@@ -490,13 +487,13 @@ class _CardTranslatedState extends State<CardTranslated>
           ),
           _isKeyboardOpen == false
               ? AnimatedOpacity(
-                  opacity: isHistory || historyItem.isEmpty ? 0 : 1,
+                  opacity: isHistory || historyItems.isEmpty ? 0 : 1,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOutCirc,
                   onEnd: () {
                     heightInfoFacts = 0;
                   },
-                  child: isReady
+                  child: isReady && isHistory == false
                       ? InkWell(
                           onTap: () {
                             showCustomAlertDialog(
@@ -578,9 +575,9 @@ class _CardTranslatedState extends State<CardTranslated>
                             ),
                           ),
                         )
-                      : const SizedBox.shrink(),
+                      : const SizedBox(),
                 )
-              : const SizedBox.shrink(),
+              : const SizedBox(),
         ],
       ),
     );

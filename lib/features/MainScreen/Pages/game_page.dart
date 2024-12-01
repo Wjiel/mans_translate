@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:mans_translate/Config/Colors/colors_data.dart';
@@ -5,8 +7,79 @@ import 'package:mans_translate/features/Games/alphabet_screen.dart';
 import 'package:mans_translate/features/Games/game_word.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Game_Page/cards.dart';
 
-class GamePage extends StatelessWidget {
-  const GamePage({super.key});
+class GamePage extends StatefulWidget {
+   GamePage({super.key});
+
+  @override
+  State<GamePage> createState() => _GamePageState();
+}
+
+class _GamePageState extends State<GamePage> {
+  late int _previousIndex;
+
+   int random(int min, int max) {
+     return min + Random().nextInt(max - min);
+   }
+
+  List<Map<String,dynamic>> _rusMansMaps = [
+    {
+      "sourceText": "Дом",
+      "correctAnswer": "Ко̄л",
+      "secondAnswer": "Кыӈ",
+      "thirdAnswer": "Киӈ"
+    },
+    {
+      "sourceText": "Год",
+      "correctAnswer": "Тāл",
+      "secondAnswer": "Кин",
+      "thirdAnswer": "Тол"
+    },
+    {
+      "sourceText": "Минута",
+      "correctAnswer": "Кӯм",
+      "secondAnswer": "Ко̄л",
+      "thirdAnswer": "Тāл"
+    },
+    {
+      "sourceText": "Спасибо",
+      "correctAnswer": "Пөмащипа",
+      "secondAnswer": "Гөмазипо",
+      "thirdAnswer": "Кӯм"
+    }
+  ];
+
+  List<Map<String,dynamic>> _mansRusMaps = [
+    {
+      "sourceText": "Наӈ",
+      "correctAnswer": "Ты",
+      "secondAnswer": "Я",
+      "thirdAnswer": "Он"
+    },
+    {
+      "sourceText": "Пы̄грись",
+      "correctAnswer": "Мальчик",
+      "secondAnswer": "Бегемот",
+      "thirdAnswer": "Город"
+    },
+    {
+      "sourceText": "Маснут",
+      "correctAnswer": "Одежда",
+      "secondAnswer": "Ты",
+      "thirdAnswer": "Два"
+    },
+    {
+      "sourceText": "Аква",
+      "correctAnswer": "Один",
+      "secondAnswer": "Мальчик",
+      "thirdAnswer": "Сапог"
+    }
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _previousIndex = random(0, _rusMansMaps.length -1);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -236,18 +309,44 @@ class GamePage extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 children: [
                   Cards(
-                    URLImage: "assets/images/taskwordmans.png",
+                    URLImage: "assets/images/taskword.png",
                     NameTask: "Слова",
                     DescriptionTask: "Выберите правильный вариант перевода",
                     function: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => GameWord(
-                            isRussian: true,
+                      int _currentIndex = random(0, _rusMansMaps.length -1);
+
+                      if(_currentIndex != _previousIndex) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GameWord(
+                              gameMap: _rusMansMaps[_currentIndex],
+                              isRussian: true,
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                        setState(() {
+                          _previousIndex = _currentIndex;
+                        });
+                      } else{
+                        while(_currentIndex == _previousIndex) {
+                          _currentIndex =random(0, _rusMansMaps.length -1);
+                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GameWord(
+                              gameMap: _rusMansMaps[_currentIndex],
+                              isRussian: true,
+                            ),
+                          ),
+                        );
+                        _previousIndex = _currentIndex;
+                        setState(() {
+
+                        });
+                      }
+
                     },
                   ),
                   Cards(
@@ -282,7 +381,7 @@ class GamePage extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 children: [
                   Cards(
-                    URLImage: "assets/images/taskword.png",
+                    URLImage: "assets/images/taskwordmans.png",
                     NameTask: "Слова",
                     DescriptionTask: "Описание",
                     function: () {
@@ -290,6 +389,7 @@ class GamePage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => GameWord(
+                            gameMap: _mansRusMaps[random(0, _mansRusMaps.length -1)],
                             isRussian: false,
                           ),
                         ),
