@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mans_translate/Config/Colors/colors_data.dart';
+import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/card_translated.dart';
 import 'package:mans_translate/features/MainScreen/main_screen.dart';
 
 class CustomNavigationBar extends StatefulWidget {
@@ -14,7 +15,7 @@ class CustomNavigationBar extends StatefulWidget {
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
   int currentIndexPage = 0;
 
-  EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 10,vertical: 6);
+  EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 6);
 
   @override
   void initState() {
@@ -25,7 +26,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
 
   void changeAnim() {
     setState(() {
-      padding = const EdgeInsets.symmetric(horizontal: 10,vertical: 6);
+      padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 6);
     });
     Timer.periodic(const Duration(milliseconds: 100), (ce) {
       setState(() {
@@ -39,7 +40,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     setState(() {
       currentIndexPage = index;
     });
-
+    isHistory = false;
     pageControllerMain.animateToPage(
       index,
       duration: const Duration(milliseconds: 300),
@@ -117,7 +118,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         items: items,
         currentIndex: currentIndexPage,
         onTap: (index) {
-          if(index != currentIndexPage){
+          if (index != currentIndexPage) {
             changeAnim();
           }
 
