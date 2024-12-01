@@ -18,11 +18,17 @@ class CardTranslated extends StatefulWidget {
   Function copyText;
   final ResultTextClass resultTextClass;
   final Stream resultTextStream;
+  final void Function() translatorSetState;
+  final StreamController resultStreamController;
+  final TextEditingController sourceEditingController;
   CardTranslated(
       {super.key,
       required this.copyText,
       required this.resultTextClass,
-      required this.resultTextStream});
+      required this.resultTextStream,
+        required this.sourceEditingController,
+        required this.resultStreamController,
+        required this.translatorSetState});
 
   @override
   State<CardTranslated> createState() => _CardTranslatedState();
@@ -84,6 +90,15 @@ class _CardTranslatedState extends State<CardTranslated>
   Artboard? _emptyHistoryArtboard;
   SMITrigger? emptyHistoryTrigger;
   StateMachineController? emptyHistoryStateMachineController;
+
+  void _setHistory(int index) {
+    widget.sourceEditingController.text = historyItem[index]["sourceText"];
+    widget.resultStreamController.add(historyItem[index]["targetText"]);
+    isRussian = historyItem[index]["isRussian"];
+    setState(() {
+      widget.translatorSetState();
+    });
+  }
 
   void _copyAnim() {
     rootBundle.load('assets/animations/copy.riv').then(
@@ -392,7 +407,9 @@ class _CardTranslatedState extends State<CardTranslated>
                                         return Material(
                                           color: Colors.transparent,
                                           child: InkWell(
-                                            onTap: () {},
+                                            onTap: () {
+                                              _setHistory(i);
+                                            },
                                             child: Ink(
                                               padding:
                                                   const EdgeInsets.symmetric(

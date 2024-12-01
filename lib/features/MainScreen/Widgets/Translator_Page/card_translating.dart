@@ -10,7 +10,6 @@ import 'dart:async';
 import 'package:mans_translate/Config/ThemesData/themes_data.dart';
 import 'package:mans_translate/features/MainScreen/Pages/translator_page.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Translator_Page/paste_button.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CardTranslating extends StatefulWidget {
   final ResultTextClass resultTextClass;
@@ -50,6 +49,14 @@ class _CardTranslatingState extends State<CardTranslating>
     "ю̄",
     "я̄"
   ];
+
+  void _cleanText() {
+    setState(() {
+      _textEditingController.text = "";
+      _resultTextStreamController.add("");
+      _sendTextToAPI();
+    });
+  }
 
   @override
   void initState() {
@@ -111,11 +118,9 @@ class _CardTranslatingState extends State<CardTranslating>
   }
 
   Future<void> _getHistory() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
   }
 
   Future<void> _addHistory() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
   }
 
   Stream _copyStream() {
@@ -167,7 +172,9 @@ class _CardTranslatingState extends State<CardTranslating>
               Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    _cleanText();
+                  },
                   borderRadius: BorderRadius.circular(5),
                   child: const Icon(
                     Icons.close_outlined,

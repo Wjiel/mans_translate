@@ -155,6 +155,12 @@ class _TranslatorPageState extends State<TranslatorPage>
 
   int _translatingFlex = 1;
 
+  void _setState() {
+    setState(() {
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -209,6 +215,9 @@ class _TranslatorPageState extends State<TranslatorPage>
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOutCirc,
                 child: CardTranslated(
+                  translatorSetState: _setState,
+                  resultStreamController: _resultStreamController,
+                  sourceEditingController: _sourceEditingController,
                   resultTextClass: _resultTextClass,
                   copyText: () {
                     copyText();
