@@ -4,6 +4,7 @@ import 'package:mans_translate/Config/Colors/colors_data.dart';
 import 'package:mans_translate/Config/ThemesData/themes_data.dart';
 import 'package:mans_translate/features/MainScreen/main_screen.dart';
 import 'package:mans_translate/features/Widgets/custom_eleveted_button.dart';
+import 'package:rive/rive.dart';
 
 class SeccondPage extends StatelessWidget {
   const SeccondPage({super.key});
@@ -14,11 +15,21 @@ class SeccondPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFEEF5FD),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Spacer(flex: 9),
+            const Spacer(flex: 5),
+            SizedBox(
+              height: 250,
+              width: 250,
+              child: RiveAnimation.asset(
+                'assets/animations/happyAnim.riv',
+                fit: BoxFit.fitHeight,
+              ),
+            ),
             AutoSizeText.rich(
               minFontSize: 1,
               TextSpan(

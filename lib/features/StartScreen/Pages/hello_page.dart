@@ -20,58 +20,31 @@ class _HelloPageState extends State<HelloPage> {
   final String text2 =
       'Мои друзья(народ Манси) находятся в беде! Их древнейший язык с каждым днем все ближе к исчезновению, и именно ты можешь помочь спасти его!';
 
-  Artboard? _helloArtboard;
-
-  SMITrigger? helloTrigger;
-
-  StateMachineController? helloStateMachineController;
-
-  void _helloAnim() {
-    rootBundle.load('assets/animations/helloAnim.riv').then(
-          (data) {
-        final file = RiveFile.import(data);
-        final artboard = file.mainArtboard;
-        helloStateMachineController =
-            StateMachineController.fromArtboard(artboard, "State Machine 1");
-        if (helloStateMachineController != null) {
-          artboard.addController(helloStateMachineController!);
-          helloTrigger = helloStateMachineController!.findSMI('Trigger 1');
-
-          for (var e in helloStateMachineController!.inputs) {
-
-          }
-          helloTrigger = helloStateMachineController!.inputs.first as SMITrigger;
-        }
-
-        setState(() => _helloArtboard = artboard);
-      },
-    );
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _helloAnim();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFEEF5FD),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Spacer(flex: 5),
             SizedBox(
-              height: 80,
-              width: 80,
-              child: _helloArtboard != null ? Rive(
-                useArtboardSize: true,
-                artboard: _helloArtboard!,
-                fit: BoxFit.scaleDown,
-              ) : SizedBox(),
+              height: 250,
+              width: 250,
+              child: RiveAnimation.asset(
+                'assets/animations/helloAnim.riv',
+                fit: BoxFit.fitHeight,
+              ),
             ),
-            const Spacer(flex: 9),
             AutoSizeText.rich(
               minFontSize: 1,
               TextSpan(
