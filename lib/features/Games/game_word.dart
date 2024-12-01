@@ -33,12 +33,14 @@ class _GameWordState extends State<GameWord> {
       showModalBottomSheet(
           context: context,
           isDismissible: false,
+          enableDrag: false,
           builder: (context) {
             return ModalSheetWrong(correctAnswer: widget.gameMap["correctAnswer"],);
           });
     } else {
       showModalBottomSheet(
           context: context,
+          enableDrag: false,
           isDismissible: false,
           builder: (context) {
             return const ModalSheetSuccessful();
