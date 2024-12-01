@@ -8,8 +8,8 @@ class StartScreen extends StatelessWidget {
   StartScreen({super.key});
 
   final _pages = [
-    const HelloPage(),
-    const SeccondPage(),
+     HelloPage(),
+     SeccondPage(),
   ];
 
   @override

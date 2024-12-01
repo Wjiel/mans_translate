@@ -54,7 +54,6 @@ class _CardTranslatingState extends State<CardTranslating>
     setState(() {
       _textEditingController.text = "";
       _resultTextStreamController.add("");
-      _sendTextToAPI();
     });
   }
 

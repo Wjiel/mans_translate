@@ -112,8 +112,7 @@ class _CardTranslatedState extends State<CardTranslated>
           copyTrigger = copyStateMachineController!.findSMI('Trigger 1');
 
           for (var e in copyStateMachineController!.inputs) {
-            debugPrint(e.runtimeType.toString());
-            debugPrint("name${e.name}End");
+
           }
           copyTrigger = copyStateMachineController!.inputs.first as SMITrigger;
         }
