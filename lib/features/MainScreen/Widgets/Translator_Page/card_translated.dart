@@ -405,6 +405,11 @@ class _CardTranslatedState extends State<CardTranslated>
                                           child: InkWell(
                                             onTap: () {
                                               _setHistory(i);
+                                              isHistory = !isHistory;
+                                              historyTrigger?.fire();
+                                              setState(() {
+
+                                              });
                                             },
                                             child: Ink(
                                               padding:
