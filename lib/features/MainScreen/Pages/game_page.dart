@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:mans_translate/Config/Colors/colors_data.dart';
+import 'package:mans_translate/features/Games/alphabet_screen.dart';
 import 'package:mans_translate/features/Games/game_word.dart';
 import 'package:mans_translate/features/MainScreen/Widgets/Game_Page/cards.dart';
 
@@ -158,7 +159,14 @@ class GamePage extends StatelessWidget {
               height: 10 + 20 * (size.height / 2400),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AlphabetScreen(),
+                  ),
+                );
+              },
               borderRadius: BorderRadius.circular(10),
               child: Ink(
                 width: size.width,
